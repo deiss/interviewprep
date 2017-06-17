@@ -1,0 +1,588 @@
+\documentclass[a4paper, 12pt]{article}
+
+% english
+\usepackage[english]{babel}
+\usepackage{lmodern}
+
+% biblio
+%\usepackage{csquotes}
+%\usepackage[backend=biber, language=english]{biblatex}
+%\addbibresource{./biblio.bib}
+
+% packages
+\usepackage{fullpage}				% really narrow margins
+\usepackage{graphicx}				% \includegraphics
+\usepackage{amsmath}				% \text
+\usepackage{multirow}				% \multirow		
+\usepackage{enumitem}				% \setitemsize
+\usepackage{appendix}				% appendix env
+\usepackage{pgf, tikz}			% figures
+
+% center vertically
+\usepackage{titling}				
+\renewcommand\maketitlehooka{\null\mbox{}\vfill}
+\renewcommand\maketitlehookd{\vfill\null}
+
+% figures
+\usetikzlibrary{positioning}
+
+% misc
+\addto\captionsenglish{\def\chaptername{Part}}		% Part/Chapter
+\renewcommand\thesection{\arabic{section}}				% arabic numbers
+\setlength\parindent{0pt}													% no indentation
+\setitemize{itemsep=0em}													% no space between itms
+
+% algorithms
+\usepackage{algpseudocode}
+\usepackage[linesnumbered, ruled]{algorithm2e}
+\usepackage{stmaryrd}
+
+ %code (default C++)
+\usepackage{listings}
+\usepackage{xcolor}
+\definecolor{keyword}{rgb}{0.76,0.18,0.64}
+\definecolor{directive}{rgb}{0.47,0.28,0.18}
+\definecolor{string}{rgb}{0.85,0.16,0.14}
+\definecolor{comment}{rgb}{0.43,0.65,0.38}
+\lstdefinestyle{cpp}{
+  language=C++,
+  tabsize=2,
+  keepspaces=true,
+  showspaces=false,
+  showtabs=false,
+  showstringspaces=false,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{keyword}\ttfamily,
+  stringstyle=\color{string}\ttfamily,
+  commentstyle=\color{comment}\ttfamily,
+  morecomment=[l][\color{directive}]{\#}
+}
+%\lstdefinestyle{xml}{
+%  language=C++,
+%  tabsize=2,
+%  keepspaces=true,
+%  showspaces=false,
+%  showtabs=false,
+%  showstringspaces=false,
+%  basicstyle=\ttfamily\footnotesize,
+%  stringstyle=\color{string},
+%  identifierstyle=\color{directive},
+%  keywordstyle=\color{directive},
+%  morestring=[b]",
+%  moredelim=[s]{>}{<},
+%  morecomment=[s]{<?}{?>},
+%  morekeywords={} % list attr here
+%}
+
+
+\title{Computer Science}
+\date{}
+
+\begin{document}
+
+%\begin{titlingpage}
+\maketitle
+%\end{titlingpage}
+
+%\newpage
+\tableofcontents
+%\listoffigures
+%\newpage
+
+
+
+%\addcontentsline{toc}{section}{References}
+%\printbibliography
+
+\section{Master Theorem}
+
+\noindent For recurrences of the form $T(n) = aT(\frac{n}{b}) + f(n)$, where:
+\begin{itemize}
+  \item $a\ge 1$ and $b>1$ are constants
+  \item $f(n)$ is an asymptotically positive function
+\end{itemize}
+\begin{enumerate}
+  \item If $f(n) = O(n^{\log_b(a)-\epsilon})$ for some constant $\epsilon >0$, then $T(n) = \Theta(n^{\log_b(a)})$.
+  \item Either of the following:\\
+    If $f(n) = \Theta(n^{\log_b(a)})$, then $T(n) = \Theta(n^{\log_b(a)}\log(n))$.\\
+    If $f(n) = \Theta(n^{\log_b(a)}\log^k(n))$, then $T(n) = \Theta(n^{\log_b^{k+1}(a)}\log(n))$.
+  \item If $f(n) = \Omega(n^{\log_b(a)+\epsilon})$ for some constant $\epsilon >0$, and if $af(\frac{n}{b})\le cf(n)$ for some constant $c<1$ and all sufficiently large $n$, then $T(n) = \Theta(f(n))$.
+\end{enumerate}
+
+\section{NP-Completeness}
+
+  \subsection{Definition}
+
+A problem is NP-Complete if it is both:
+\begin{itemize}
+  \item In NP: can be solvable in polynomial time on a non-deterministic Turing machine, or which can be verified in polynomial time.
+  \item NP-hard: any problem in NP can be reduced in polynomial time to this problem.
+\end{itemize}
+
+  \subsection{Reducibility}
+
+A language $L_1$ is polynomial-time reducible to a language $L_2$, written $L_1\le _PL_2$, if there exists a polynomial-time computable function $f$ such that for all $x$, $x\in L_1\Leftrightarrow f(x)\in L_2$.
+
+  \subsection{Proof of NP-Completeness}
+
+If $L$ is a language such that $L'\le_PL$ for some $L'\in$ NPC, then $L$ is NP-hard. If, in addition, $L\in$ NP, then $L\in$ NPC.
+In other words, to show that a language is NP-complete:
+\begin{enumerate}
+  \item Show that $L\in$ NP (CLIQUE).
+  \item Select a known NP-complete language $L'$ (SAT).
+  \item Find $f$ mapping every instance of $L'$ to an instance of $L$ (SAT $\le_P$ CLIQUE).
+  \item Prove that $x\in L'\Leftrightarrow f(x)\in L$ and $f$ runs in polynomial-time.
+\end{enumerate}
+
+\section{Basic Maths}
+
+  \subsection{Series}
+
+$$\sum_{i=0}^{n}i = \frac{n(n+1)}{2}$$
+$$\sum_{i=0}^{n}i^2 = \frac{n(n+1)(2n+1)}{6}$$
+$$\sum_{i=0}^{n}i^3 = \frac{n^2(n+1)^2}{4}$$
+$$\sum_{i=0}^{n}q^i = \frac{1-q^{n+1}}{1-q}$$
+
+  \subsection{Combinatorics}
+
+Permutations of length $k$ among ensemble of size $n$ (order \textit{matters}): $P(k, n) = \frac{n!}{(n-k)!} $
+Combinations of length $k$ among ensemble of size $n$ ($k$ among $n$): $\left(\begin{array}{c}n\\ k\end{array}\right) = \frac{n!}{k!(n-k)!}$
+
+$$\left(\begin{array}{c}n\\ k\end{array}\right) = \left(\begin{array}{c}n\\ n-k\end{array}\right)$$
+$$\sum_{i=0}^{n}\left(\begin{array}{c}n\\ i\end{array}\right) = 2^n$$
+
+  \subsection{Powers of 2}
+
+\begin{center}
+\begin{math}
+  \begin{array}{|r|r|r|r|r|r|r|r|}
+    \hline
+    2^\textbf{7} & 128 & 2^{\textbf{15}} & 32\ 768 & 2^{\textbf{23}} & 8\ 388\ 608 & 2^{\textbf{31}} & 2\ 147\ 483\ 648 \\
+    2^\textbf{8} & 256 & 2^{\textbf{16}} & 65\ 536 & 2^{\textbf{24}} & 16\ 777\ 216 & 2^{\textbf{32}} & 4\ 294\ 967\ 296 \\
+    \hline
+    2^{\textbf{10}} & 1\ 024 & 2^{\textbf{20}} & 1\ 048\ 576 & 2^{\textbf{30}} & 1\ 073\ 741\ 824 & 2^{\textbf{40}} & 1\cdot 10^{12} \\
+    \hline
+  \end{array}
+\end{math}
+\end{center}
+
+\section{Dynamic Programming -- Greedy}
+
+  \subsection{Optimal Substructure}
+
+\textit{Example:} Matrix-chain multiplication
+
+The optimal substructure of this problem is as follows. Suppose that to optimally parenthesize $A_iA_{i+1}...A_j$, we split the product between $A_k$ and $A_{k+1}$. Then the way we parenthesize the "prefix" subchain $A_iA_{i+1}...A_k$ within this optimal parenthesization of $A_iA_{i+1}...A_j$ must be an optimal parenthesization of $A_iA_{i+1}...A_k$. Why? If there were a less costly way to parenthesize $A_iA_{i+1}...A_k$, then we could substitute that parenthesization in the optimal parenthesization of $A_iA_{i+1}...A_j$ to produce another way to parenthesize $A_iA_{i+1}...A_j$ whose cost was lower than the optimum: a contradiction. A similar observation holds for how we parenthesize the subchain $A_{k+1}A_{k+2}...A_j$ in the optimal parenthesization of $A_iA_{i+1}...A_j$: it must be an optimal parenthesization of $A_{k+1}A_{k+2}...A_j$.
+
+  \subsection{Making the Greedy choice}
+
+\textit{Example:} Activity Selection
+
+Consider any nonempty subproblem $S_k$, and let $a_m$ be an activity in $S_k$ with the earliest finish time. Then $a_m$ is included in some maximum-size subset of mutually compatible activities of $S_k$.
+
+\section{Divide and Conquer}
+
+  \subsection{Karatsuba Algorithm}
+
+The basic step of Karatsuba's algorithm is a formula that allows one to compute the product of two large numbers $x$ and $y$ using three multiplications of smaller numbers, each with about half as many digits as $x$ or $y$, plus some additions and digit shifts.
+
+~\\
+Let $x$ and $y$ be represented as $n$ $n$-digit strings in some base $B$. For any positive integer $m$ less than $n$, one can write the two given numbers as
+$$x = x_{1}B^{m}+x_{0}$$
+$$y = y_{1}B^{m}+y_{0},$$
+
+where $x_{0}$ and $y_{0}$ are less than $B^{m}$. The product is then
+$$xy=(x_{1}B^{m}+x_{0})(y_{1}B^{m}+y_{0})$$
+$$xy=x_{1}y_{1}B^{2m}+(x_{1}y_{0}+x_{0}y_{1})B^{m}+x_{0}y_{0},$$
+
+These formulae require four multiplications, and were known to Charles Babbage. Karatsuba observed that $xy$ can be computed in only three multiplications, at the cost of a few extra additions. One can calculate:
+$$x_{1}y_{0}+x_{0}y_{1}=(x_{1}+x_{0})(y_{1}+y_{0})-x_{1}y_{1}-x_{0}y_{0}$$
+
+Karatsuba's basic step works for any base $B$ and any $m$, but the recursive algorithm is most efficient when $m$ is equal to $\frac{n}{2}$, rounded up.
+
+\section{Graphs}
+
+  \subsection{Representation}
+
+\begin{center}
+\begin{tabular}{| c | c | c |}
+\cline{2-3}
+\multicolumn{1}{c |}{} & Incidence List & Adjacency Matrix \\
+\hline
+Build & $n+m$ & $n^2$ \\
+\hline
+Aretes/sommets voisins & $d$ & $n$ \\
+\hline
+2 nodes connected & $d$ & 1 \\
+\hline
+disconnect 2 nodes & $d$ & 1 \\
+\hline
+spatial & $n+m$ & $n^2$ \\
+\hline
+\end{tabular}
+\end{center}
+
+  \subsection{Other Algorithms}
+
+    \subsubsection{Strongly Connected Components}
+
+A graph or component of a graph is strongly connected if every vertex is reachable from every other vertex. Below is Kojarasu's algorithm to find strongly connected components in a graph.
+
+\vspace{0.5cm}
+
+\IncMargin{2em}
+\begin{algorithm}[H]
+\SetKwInput{Input}{Input}
+\SetKwInput{Output}{Output}
+\SetKwFunction{Assign}{Assign}
+\SetKwFunction{Visit}{Visit}
+\caption{Kosaraju}
+\vspace{0.1cm}
+\Indm
+\Input{Graph $G$}
+\Output{List $L$ of strongly connected components}
+\Indp
+\vspace{0.1cm}
+\ForEach{vertex $v$ of $G$}{
+  mark $v$ as \textit{unvisited}
+}
+$L\gets$ empty list
+
+\ForEach{vertex $v$ of $G$}{
+  \Visit{$v$}
+}
+\ForEach{vertex $v$ of $L$ in order}{
+  \Assign{$v$, $v$}
+}
+\end{algorithm}
+\DecMargin{2em}
+
+\vspace{0.5cm}
+
+\IncMargin{2em}
+\begin{algorithm}[H]
+\SetKwInput{Input}{Input}
+\SetKwInput{Output}{Output}
+\SetKwFunction{Visit}{Visit}
+\caption{Visit}
+\vspace{0.1cm}
+\Indm
+\Input{Vertex $v$, List $L$}
+\Indp
+\vspace{0.1cm}
+\If{$v$ is unvisited}{
+  mark $v$ as visited
+
+  \ForEach{\textit{out}-neighbour $u$ of $v$ ($v\rightarrow u$)}{
+    \Visit{$u$}
+  }
+  prepend $v$ to $L$
+}
+\end{algorithm}
+\DecMargin{2em}
+
+\vspace{0.5cm}
+
+\IncMargin{2em}
+\begin{algorithm}[H]
+\SetKwInput{Input}{Input}
+\SetKwInput{Output}{Output}
+\SetKwFunction{Assign}{Assign}
+\caption{Assign}
+\vspace{0.1cm}
+\Indm
+\Input{Vertex $v$, Vertex $root$}
+\Indp
+\vspace{0.1cm}
+\If{$v$ has not been assigned to a component}{
+  assign $v$ as belonging to the component whose root is \textit{root}
+
+  \ForEach{\textit{in}-neighbour $u$ of $v$ ($v\leftarrow u$)}{
+    \Assign{$u$, $root$}
+  }
+}
+\end{algorithm}
+\DecMargin{2em}
+
+    \subsubsection{Maximum Bipartite Matching}
+
+This problem is similar to finding the maximum flow in a graph:
+\begin{itemize}
+  \item Add vertices $s$ and $t$ (source and sink)
+	\item Make all the capacities 1
+	\item Run Ford-Fulkerson on the graph, the edges used in the flow give the matching
+\end{itemize}
+
+  \subsection{Search}
+
+    \subsubsection{Search Algorithms Comparison}
+
+For a graph with:
+\begin{itemize}
+  \item $b$: branching factor
+  \item $d$: depth of the shallowest solution
+  \item $m$: maximum depth of the search tree
+  \item $l$: depth limit
+\end{itemize}
+\begin{tabular}{|l|l|l|l|l|l|l|}
+  \hline
+  Criterion & BFS & UCS & DFS & Depth-Lim. & Iterative Deep. & Bidirectional\\ \hline
+  Complete & Yes$^\text{a}$ & Yes$^\text{a,b}$ & No & No & Yes$^\text{a}$ & Yes$^\text{a,d}$\\ \hline
+  Time & $O(b^d)$ & $O(b^{1+\lfloor C^*/\epsilon\rfloor})$ & $O(b^m)$ & $O(b^l)$ & $O(b^d)$ & $O(b^{d/2})$\\ \hline
+  Space & $O(b^d)$ & $O(b^{1+\lfloor C^*/\epsilon\rfloor})$ & $O(bm)$ & $O(bl)$ & $O(bd)$ & $O(b^{d/2})$\\ \hline
+  Optimal & Yes$^\text{c}$ & Yes & No & No & Yes$^\text{c}$ & Yes$^\text{c,d}$\\ \hline
+\end{tabular}
+
+~\\
+Caveats:
+\begin{itemize}
+  \item a: complete if $b$ is finite\
+  \item b: complete if step costs $\ge\epsilon$ for $\epsilon \ge 0$\
+  \item c: optimal if step costs are all identical\
+  \item d: if both directions use BFS\\
+\end{itemize}
+
+  \subsection{Uniform Cost Search}
+
+\IncMargin{2em}
+\begin{algorithm}[H]
+\SetKwInput{Input}{Input}
+\SetKwInput{Output}{Output}
+\caption{Uniform Cost Search}
+\vspace{0.1cm}
+\Indm
+\Input{Graph $g$, Node $start$, Node $goal$}
+\Output{Path $p$}
+\Indp
+\vspace{0.1cm}
+frontier $\gets$ empty priority queue ordered by path cost
+
+frontier.push($start$)
+
+visited $\gets$ empty set
+
+\While{frontier is not empty}{
+  node $\gets$ frontier.pop()
+
+  \If{node is $goal$}{
+    \KwRet{True}
+  }
+  visited.insert(node)
+
+  \ForEach{neighbour n of node}{
+    \eIf{n not in visited or frontier}{
+      frontier.push(n);
+    }{
+      replace that frontier node with n
+    }
+  }
+}
+\end{algorithm}
+\DecMargin{2em}
+
+\section{Data Structures}
+
+	\subsection{Arrays, Vectors, Linked Lists}
+
+		\subsubsection*{Complexity}
+	
+\begin{center}
+\begin{tabular}{| c | c | c | c |}
+\cline{2-4}
+\multicolumn{1}{c |}{} & Array/Vector & Linked List & Doubly Linked List \\
+\hline
+adding an element at the end & 1 or $n$ & 1 & 1 \\
+\hline
+erase an element at the end & 1 & $n$ & 1 \\
+\hline
+access to the $i^{\text{th}}$ element & 1 & $i$ & min($i$, $n-i$) \\
+\hline
+insert/erase the $i^{\text{th}}$ element & $n-i$ & $i$ & min($i$, $n-i$) \\
+\hline
+insert/erase the $i^{\text{th}}$ element (with iterators) & $n-i$ & $i$ & 1 \\
+\hline
+merge two data structures (sizes $n_{1}$ and $n_{2}$) & min($n_{1}, n_{2}$) & 1 & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+	\subsection{Binary Heap}
+	
+		\subsubsection*{Definitions}
+		
+A heap is a specialized tree-based data structure that satisfies the heap property : if A is a parent node of B then the key of node A is ordered with respect to the key of node B with the same ordering applying across the heap. Heaps can be classified further as either a "max heap" or a "min heap". In a max heap, the keys of parent nodes are always greater than or equal to those of the children and the highest key is in the root node.
+	
+		\subsubsection*{Complexity}
+
+\begin{center}	
+\begin{tabular}{| c | c | c | c | c | c |}
+\cline{2-6}
+\multicolumn{1}{c |}{} & Space & Search & Insert & Delete & Peek \\
+\hline
+Average & $n$ & $n$ & 1 & $\log(n)$ & 1 \\
+\hline
+Worst & $n$ & $n$ & $\log(n)$ & $\log(n)$ & 1 \\
+\hline
+\end{tabular}
+\end{center}
+	
+		\subsubsection*{Implementation}
+	
+A binary heap is a complete binary tree. Heaps are usually implemented with arrays. If the root is at index 0, then :
+\begin{center}
+	parent($i$) = floor($\frac{n-1}{2}$) \hspace{0.7cm} left($i$) = $2i+1$ \hspace{0.7cm} right($i$) = $2i+2$
+\end{center}
+
+	\subsection{Hash Tables}
+	
+In computing, a hash table (hash map) is a data structure used to implement an associative array, a structure that can map keys to values. A hash table uses a hash function to compute an index into an array of buckets or slots, from which the desired value can be found.
+
+\begin{center}
+\begin{tabular}{| c | c | c |}
+\cline{2-3}
+\multicolumn{1}{c |}{} & Average & Worst \\
+\hline
+Space & $n$ & $n$ \\
+\hline
+Search & $1$ & $n$ \\
+\hline
+Insert & $1$ & $n$ \\
+\hline
+Delete & $1$ & $n$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\section{Backtracking}
+
+	\subsection{First Valid Path}
+	
+\begin{lstlisting}[style=cpp]
+	(bool, State) branch_and_bound() {
+		State state = first_state;
+		return (backtrack(), state);
+	}
+	bool backtracking() {
+		if(valid(state)) {
+			if(final(state)) {
+				return true;
+			}
+			else {
+				vector<Extension> extensions = state.getExtensions();
+				for(Extension extension : extensions) {
+					State old = state;
+					state = extension;
+					if(backtrack()) return true;
+					state = old;
+				}
+			}
+		}
+		return false;
+	}
+\end{lstlisting}
+
+	\subsection{Branch and Bound}
+	
+\begin{lstlisting}[style=cpp]
+	(Score, State) branch_and_bound() {
+		State state = first_state;
+		Score sc_max = lowest_score;
+		State st_max;
+		backtrack();
+		return (sc_max, st_max);
+	}
+	void backtracking() {
+		if(valid(state)) {
+			if(score(state) > sc_max) {
+				sc_max = score(state);
+				st_max = state;
+			}
+			vector<Extension> extensions = state.getExtensions();
+			states.sort(DECREASING);
+			for(Extension extension : extensions) {
+				State old = state;
+				state = extension;
+				if(score(state) > sc_max) backtrack();
+				state = old;
+			}
+		}
+	}
+\end{lstlisting}
+
+\section{Sorting Algorithms}
+
+	\subsection{Complexity}
+	
+\begin{center}
+\begin{tabular}{| c | c | c | c | c | c |}
+\cline{2-6}
+\multicolumn{1}{c |}{} & Selection & Insertion & Merge & Quick & Heap \\
+\hline
+$C_{\text{max}}^{t}$ & $n^2$ & $n^2$ & $n\log(n)$ & $n^2$ & $n\log(n)$ \\
+\hline
+ $C_{\text{ave}}^{t}$ & $n^2$ & $n^2$ & $n\log(n)$ & $n\log(n)$ & $n\log(n)$ \\
+\hline
+ $C_{\text{min}}^{t}$ & $n^2$ & $n$ & $n\log(n)$ & $n\log(n)$ & $n\log(n)$ \\
+\hline
+ $C_{\text{max}}^{s}$ & 1 & 1 & $n$ & $n$ & 1 \\
+\hline
+ $C_{\text{ave}}^{s}$ & 1 & 1 & $n$ & $\log(n)$ & 1 \\
+\hline
+ $C_{\text{min}}^{s}$ & 1 & 1 & $n$ & $\log(n)$ & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+\section{Other Algorithms}
+
+  \subsection{Fisher-Yates}
+
+\IncMargin{2em}
+\begin{algorithm}[H]
+\SetKwInput{Input}{Input}
+\SetKwInput{Output}{Output}
+\caption{Fisher-Yates}
+\vspace{0.1cm}
+\Indm
+\Input{Array $a$}
+\Output{Shuffled array $a$}
+\Indp
+\vspace{0.1cm}
+  \For{$i=n-1$ \textbf{downto} $1$}{
+    j $\gets$ random integer such that $0 \le j \le i$
+
+    exchange \texttt{a[j]} and \texttt{a[i]}
+  }
+\end{algorithm}
+\DecMargin{2em}
+
+\section{Design Patterns}
+
+	\subsection{Iterator Pattern}
+	
+In object-oriented programming, the iterator pattern is a design pattern in which an iterator is used to traverse a container and access the container's elements.
+
+	\subsection{Adapter Pattern}
+	
+The adapter pattern is a software design pattern that allows the interface of an existing class to be used from another interface. It is often used to make existing classes work with others without modifying their source code.
+
+\begin{figure}[!h]
+	\center\includegraphics[width=9cm]{figures/adapter.png}
+	\caption{Adapter Pattern}
+\end{figure}
+
+	\subsection{Observer Pattern}
+	
+The observer pattern is a software design pattern in which an object, called the subject, maintains a list of its dependents, called observers, and notifies them automatically of any state changes, usually by calling one of their methods.
+
+\begin{figure}[!h]
+	\center\includegraphics[width=12cm]{figures/observer.png}
+	\caption{Observer Pattern}
+\end{figure}
+
+\end{document}
+
+
+
+
+

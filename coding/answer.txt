@@ -1,0 +1,726 @@
+
+// ****************************************************************************
+// *** SORTS ***
+
+// Selection Sort
+void sorts::selection_sort::sort(vector<int>& a, bool increasing) const {
+  if (a.size() <= 1) {
+    return;
+  }
+  for (int i = 0; i < a.size() - 1; ++i) {
+    int imin = i;
+    for (int j = i + 1; j < a.size(); ++j) {
+      if (increasing ? a[j] < a[imin] : a[j] > a[imin]) {
+        imin = j;
+      }
+    }
+    swap(a[imin], a[i]);
+  }
+}
+
+// Insertion Sort
+void sorts::insertion_sort::sort(vector<int>& a, bool increasing) const {
+  if (a.size() <= 1) {
+    return;
+  }
+  for (int i = 1; i < a.size(); ++i) {
+    int j = i;
+    int v = a[i];
+    while (j > 0 && (increasing ? a[j-1] > v : a[j-1] < v)) {
+      a[j] = a[j-1];
+      j--;
+    }
+    a[j] = v;
+  }
+}
+
+// Quick Sort
+void sorts::quick_sort::sort(vector<int>& a, bool increasing) const {
+  auto partition = [&a, increasing](int b, int e) {
+    int ip = b;
+    int vp = a[e];
+    for (int i = b; i <= e; ++i) {
+      if (increasing ? a[i] <= vp : a[i] >= vp) {
+        swap(a[i], a[ip++]);
+      }
+    }
+    return ip - 1;
+  };
+  function<void(int, int)> local = [&partition, &a, &local](int b, int e) {
+    if (b < e) {
+      int p = partition(b, e);
+      local(b, p - 1);
+      local(p + 1, e);
+    }
+  };
+  local(0, a.size() - 1);
+}
+
+// Heap Sort
+void sorts::heap_sort::sort(vector<int>& a, bool increasing) const {
+  if (a.size() <= 1) {
+    return;
+  }
+  auto it = a.end();
+  for (int i = 0; i < a.size() - 1; ++i) {
+    make_heap(a.begin(), it--, [increasing](int l, int r) {
+      return increasing ? l < r : r < l;
+    });
+    swap(a[0], *it);
+  }
+}
+
+// Counting Sort
+vector<int> sorts::counting_sort::sort(
+    const vector<int>& a, bool increasing) const {
+  if (a.size() <= 1) {
+    return a;
+  }
+  vector<int> c(1 + *max_element(a.begin(), a.end()));
+  vector<int> s(a.size());
+  for (int i = 0; i < a.size(); ++i) {
+    c[a[i]]++;
+  }
+  if (increasing) {
+    for (int i = 1; i < c.size(); ++i) {
+      c[i] += c[i-1];
+    }
+  } else {
+    for (int i = c.size() - 1; i >= 1; --i) {
+      c[i-1] += c[i];
+    }
+  }
+  for (int i = a.size() - 1; i >= 0; --i) {
+    s[c[a[i]] - 1] = a[i];
+    c[a[i]]--;
+  }
+  return s;
+}
+
+// Radix Sort
+vector<int> sorts::radix_sort::sort(
+    const vector<int>& a, bool increasing) const {
+  //throw not_implemented_exc();
+  if (a.size() <= 1) {
+    return a;
+  }
+  auto stable = [increasing](vector<int>& a, int digit) {
+    if (a.size() <= 1) {
+      return a;
+    }
+    auto dig = [&digit](int nb) -> int {
+      return nb % (int)pow(10, digit) / (int)pow(10, digit - 1);
+    };
+    vector<int> c(10);
+    vector<int> s(a.size());
+    for (int i = 0; i < a.size(); ++i) {
+      c[dig(a[i])]++;
+    }
+    if (increasing) {
+      for (int i = 1; i < c.size(); ++i) {
+        c[i] += c[i-1];
+      }
+    } else {
+      for (int i = c.size() - 1; i >= 1; --i) {
+        c[i - 1] += c[i];
+      }
+    }
+    for (int i = a.size() - 1; i >= 0; --i) {
+      s[c[dig(a[i])] - 1] = a[i];
+      c[dig(a[i])]--;
+    }
+    return s;
+  };
+  int nb_dig = 1 + log10(*max_element(a.begin(), a.end()));
+  auto s = a;
+  for (int i = 1; i <= nb_dig; ++i) {
+    s = stable(s, i);
+  }
+  return s;
+}
+
+// Merge Sort
+vector<int> sorts::merge_sort::sort(
+    const vector<int>& a, bool increasing) const {
+  if (a.size() <= 1) {
+    return a;
+  }
+  auto lmerge = [increasing](vector<int>& l, vector<int>& r) {
+    int il = 0, ir = 0;
+    vector<int> m(l.size() + r.size());
+    for (int i = 0; i < l.size() + r.size(); ++i) {
+      if (il == l.size() ||
+          (ir < r.size() && (increasing ? l[il] > r[ir] : l[il] < r[ir]))) {
+        m[i] = r[ir++];
+      } else {
+        m[i] = l[il++];
+      }
+    }
+    return m;
+  };
+  function<vector<int>(int, int)> local = [&a, &lmerge, &local](int b, int e) {
+    if (b == e) {
+      vector<int> m;
+      m.push_back(a[b]);
+      return m;
+    } else {
+      int m = (b + e) / 2;
+      auto l = local(b, m);
+      auto r = local(m + 1, e);
+      return lmerge(l, r);
+    } 
+  };
+  return local(0, a.size() - 1);
+}
+
+
+// ****************************************************************************
+// *** PRIORITY QUEUE ***
+
+int datastructures::pqueue::left(int node) const {
+  return 2*node + 1;
+}
+
+int datastructures::pqueue::right(int node) const {
+  return 2*node + 2;
+}
+
+int datastructures::pqueue::parent(int node) const {
+  return (node - 1) / 2;
+}
+
+void datastructures::pqueue::heapify(int node, int size) {
+  int extreme = node;
+  if (left(node) < size &&
+      (maxqueue ? a[left(node)] > a[extreme]
+                : a[left(node)] < a[extreme])) {
+    extreme = left(node);
+  }
+  if (right(node) < size &&
+      (maxqueue ? a[right(node)] > a[extreme]
+                : a[right(node)] < a[extreme])) {
+    extreme = right(node);
+  }
+  if (extreme != node) {
+    swap(a[extreme], a[node]);
+    heapify(extreme, size);
+  }
+}
+
+void datastructures::pqueue::build() {
+  for (int i = a.size()/2 - 1; i >= 0; --i) {
+    heapify(i);
+  }
+}
+ 
+void datastructures::pqueue::insert(int key) {
+  if (a.empty()) {
+    a.push_back(key);
+  } else {
+    if (maxqueue) {
+      a.push_back(*min_element(a.begin(), a.end()) - 1);
+      increase_key(a.size() - 1, key);
+    } else {
+      a.push_back(*max_element(a.begin(), a.end()) + 1);
+      decrease_key(a.size() - 1, key);
+    }
+  }
+}
+
+int datastructures::pqueue::extract() {
+  int ans = a[0];
+  a[0] = a[a.size() - 1];
+  a.pop_back();
+  heapify(0);
+  return ans;
+}
+
+void datastructures::pqueue::increase_key(int node, int new_key) {
+  a[node] = new_key;
+  if (maxqueue) {
+    while (node > 0 && a[node] > a[parent(node)]) {
+      swap(a[node], a[parent(node)]);
+      node = parent(node);
+    }
+  } else {
+    heapify(node);
+  }
+}
+
+void datastructures::pqueue::decrease_key(int node, int new_key) {
+  a[node] = new_key;
+  if (!maxqueue) {
+    while (node > 0 && a[node] < a[parent(node)]) {
+      swap(a[node], a[parent(node)]);
+      node = parent(node);
+    }
+  } else {
+    heapify(node);
+  }
+}
+
+
+// ****************************************************************************
+// *** BST ***
+
+datastructures::bst::node* datastructures::bst::search(int key) const {
+  node* n = root;
+  while (n != nullptr && n->key != key) {
+    if (key <= n->key) {
+      n = n->left;
+    } else {
+      n = n->right;
+    } 
+  }
+  return n;
+}
+
+datastructures::bst::node* datastructures::bst::vmin(node* start) const {
+  while (start->left != nullptr) {
+    start = start->left;
+  }
+  return start;
+}
+
+datastructures::bst::node* datastructures::bst::vmax(node* start) const {
+  while (start->right != nullptr) {
+    start = start->right;
+  }
+  return start;
+}
+
+datastructures::bst::node* datastructures::bst::successor(node* start) const {
+  if (start->right != nullptr) {
+    return vmin(start->right);
+  }
+  node* p = start->parent;
+  while (p != nullptr && p->right == start) {
+    start = p;
+    p = p->parent;
+  }
+  return p;
+}
+
+datastructures::bst::node*
+datastructures::bst::predecessor(node* start) const {
+  if (start->left != nullptr) {
+    return vmax(start->left);
+  }
+  node* p = start->parent;
+  while (p != nullptr && p->left == start) {
+    start = p;
+    p = p->parent;
+  }
+  return p;
+}
+
+datastructures::bst::node* datastructures::bst::insert(int key) {
+  node* n = new node(key);
+  node* p = nullptr;
+  node* c = root;
+  while (c != nullptr) {
+    p = c;
+    if (key <= c->key) {
+      c = c->left;
+    } else {
+      c = c->right;
+    }
+  }
+  n->parent = p;
+  if (p == nullptr) {
+    root = n;
+  } else if (key <= p->key) {
+    p->left = n;
+  } else {
+    p->right = n;
+  }
+  return n;
+}
+
+void datastructures::bst::del(node* start) {
+  auto transplant = [this](node* n, node* v) {
+    if (n == root) {
+      root = v;
+    } else if (n == n->parent->right) {
+      n->parent->right = v;
+    } else {
+      n->parent->left = v;
+    }
+    if (v != nullptr) {
+      v->parent = n->parent;
+    }
+  };
+  if (start->left == nullptr) {
+    transplant(start, start->right);
+  } else if (start->right == nullptr) {
+    transplant(start, start->left);
+  } else {
+    node* s = vmin(start->right);
+    if (s != start->right) {
+      transplant(s, s->right);
+      s->right = start->right;
+      start->right->parent = s;
+    }
+    transplant(start, s);
+    s->left = start->left;
+    start->left->parent = s;
+  }
+}
+
+void datastructures::bst::walk(node* start, vector<int>& sorted) const {
+  if (start != nullptr) {
+    walk(start->left, sorted);
+    sorted.push_back(start->key);
+    walk(start->right, sorted);
+  }
+}
+
+
+// ****************************************************************************
+// *** LINKED LIST ***
+
+// Floyd Linked List Cycle Detection
+void datastructures::ll_cycle(node* start, int* mu, int* lambda) {
+  //throw not_implemented_exc();
+  *mu = 0;
+  *lambda = 0;
+  if (start == nullptr || start->next == nullptr ||
+      start->next->next == nullptr) {
+    return;
+  }
+
+  node* tortoise = start->next;
+  node* hare = start->next->next;
+  while (tortoise != hare) {
+    if (hare->next == nullptr) return;
+    tortoise = tortoise->next;
+    hare = hare->next->next;
+  }
+
+  // Cycle start
+  tortoise = start;
+  *mu = 0;
+  while (tortoise != hare) {
+    (*mu)++;
+    tortoise = tortoise->next;
+    hare = hare->next;
+  }
+
+  // Cycle length
+  *lambda = 1;
+  tortoise = hare->next;
+  while (tortoise != hare) {
+    (*lambda)++;
+    tortoise = tortoise->next;
+  }
+}
+
+
+// ****************************************************************************
+// *** NBRS ***
+
+// GCD
+int nbrs::gcd(int a, int b) {
+  while (b != 0) {
+    int c = a;
+    a = b;
+    b = c % b;
+  }
+  return a;
+}
+
+// Selection
+int nbrs::selection(vector<int>& a, int i) {
+  auto partition = [&a](int b, int e) {
+    int ip = b;
+    int vp = a[e];
+    for (int i = b; i <= e; ++i) {
+      if (a[i] <= vp) {
+        swap(a[i], a[ip++]);
+      }
+    }
+    return ip - 1;
+  };
+  function<int(int, int, int)> local =
+      [&partition, &a, &local](int b, int e, int i) {
+    if (b == e) {
+      return a[b];
+    }
+    int q = partition(b, e);
+    int k = q - b + 1;
+    if (k == i) {
+      return a[q];
+    } else if (i < k) {
+      return local(b, q - 1, i);
+    } else {
+      return local(q + 1, e, i - k);
+    }
+  };
+  return local(0, a.size() - 1, i);
+}
+
+// Subsets
+set<string> nbrs::subsets(const string& letters) {
+  set<string> ans;
+  for (int i = 0; i < pow(2, letters.size()); ++i) {
+    int c = 0;
+    string s;
+    while ((i >> c) > 0) {
+      if (((i >> c) & 1) > 0) {
+        s.push_back(letters[c]);
+      }
+      c++;
+    }
+    ans.insert(s);
+  }
+  return ans;
+}
+
+// Permutations
+set<string> nbrs::permutations(const string& letters) {
+  set<string> ans;
+  function<void(const string&, const string&)> local =
+      [&local, &ans](const string& prefix, const string& rem) {
+    if (rem.size() == 0) {
+      ans.insert(prefix);
+    } else {
+      for (int i = 0; i < rem.size(); ++i) {
+        string without = rem;
+        without.erase(i, 1);
+        local(prefix + rem[i], without);
+      }
+    }
+  };
+  local("", letters);
+  return ans;
+}
+
+// Kadane
+int nbrs::kadane(const vector<int>& a) {
+  int max_ever = 0;
+  int max_here = 0;
+  for (int i = 0; i < a.size(); ++i) {
+    max_here = max(max_here + a[i], 0);
+    max_ever = max(max_ever, max_here);
+  }
+  return max_ever;
+}
+
+// Binary Search
+bool nbrs::binsearch(const vector<int>& a, int key) {
+  int b = 0;
+  int e = a.size() - 1;
+  while (b <= e) {
+    int mid = (b + e) / 2;
+    if (a[mid] == key) {
+      return true;
+    } else if (a[mid] < key) {
+      b = mid + 1;
+    } else {
+      e = mid - 1;
+    }
+  }
+  return false;
+}
+
+// KMP substring matching
+int nbrs::kmp(const string& pattern, const string& text) {
+  // Generate the array of longest prefix that is also suffix.
+  auto lps_gen = [&pattern]() {
+    int i = 1;                            // index in the pattern
+    int len = 0;                          // longest prefix
+    vector<int> lps(pattern.size(), 0);   // initialize to 0
+    while (i < pattern.size()) {
+      if (pattern[i] == pattern[len]) {
+        len++;
+        lps[i] = len;
+        i++;
+      } else {
+        if (len != 0) {
+          len = lps[len - 1];
+        } else {
+          lps[i] = 0;
+          i++;
+        }
+      }
+    }
+    return lps;
+  };
+
+  int i = 0;                 // index in the text
+  int j = 0;                 // index in the pattern
+  int matches = 0;           // number of matches
+  auto lps = lps_gen();
+  while (i < text.size()) {
+    if (pattern[j] == text[i]) {
+      j++; i++;
+    }
+    if (j == pattern.size()) {
+      matches++;
+      j = lps[j-1];
+    } else if (i < text.size() && pattern[j] != text[i]) {
+      if (j != 0) {
+        j = lps[j-1];
+      } else {
+        i++;
+      }
+    }
+  }
+  return matches;
+}
+
+
+// ****************************************************************************
+// *** GRAPHS ***
+
+// Topological Sort
+vector<graphs::vertex*> graphs::graph::topo_sort(bool* has_cycle) {
+  *has_cycle = false;
+  set<vertex*> unmarked(vertices.begin(), vertices.end());
+  set<vertex*> temporary;
+  vector<vertex*> vlist;
+  function<bool(vertex*)> visit =
+      [&vlist, &unmarked, &temporary, &visit, &has_cycle](vertex* v) {
+    if (temporary.find(v) != temporary.end()) {
+      *has_cycle = true;
+      return false;
+    }
+    if (unmarked.find(v) != unmarked.end()) {
+      temporary.insert(v);
+      for (vertex* n : v->neighs) {
+        if (!visit(n)) return false;
+      }
+      temporary.erase(v);
+      unmarked.erase(v);
+      vlist.push_back(v);
+    }
+    return true;
+  };
+  while (!unmarked.empty()) {
+    if (!visit(*unmarked.begin())) return vector<vertex*>();
+  }
+  reverse(vlist.begin(), vlist.end());
+  return vlist;
+}
+
+// 2-Coloring
+bool graphs::graph::two_coloring() {
+  map<vertex*, int> color;           // All vertices start with color 0 (null)
+  for (auto* v0 : vertices) {
+    if (color[v0] == 0) {
+      color[v0] = 1;
+      queue<vertex*> vsearch;
+      vsearch.push(v0);
+      while (!vsearch.empty()) {
+        vertex* v = vsearch.front();
+        vsearch.pop();
+        for (vertex* n : v->neighs) {
+          if (color[n] == 0) {
+            color[n] = color[v] == 1 ? 2 : 1;
+            vsearch.push(n);
+          } else if (color[n] == color[v]) {
+            return false;
+          }
+        }
+      }
+    }
+  }
+  return true;
+}
+
+// Prim
+vector<graphs::edge*> graphs::graph::prim() {
+  set<edge*> esearch;
+  set<vertex*> visited;
+  vector<edge*> cover;
+  vertex* v0 = vertices[rand() % vertices.size()];   // start with rand vertex
+  visited.insert(v0);
+  for (vertex* n : v0->neighs) { esearch.insert(edgebet(v0, n)); }
+  while (!esearch.empty()) {
+    auto eminit = min_element(esearch.begin(), esearch.end(),
+        [](edge* e1, edge* e2) {
+      return e1->cost < e2->cost;
+    });
+    edge* emin = *eminit;
+    esearch.erase(eminit);
+    vertex* v1 = emin->v1;
+    vertex* v2 = emin->v2;
+    if (visited.find(v1) == visited.end() ||
+        visited.find(v2) == visited.end()) {
+      cover.push_back(emin);
+      if (visited.find(v1) == visited.end()) {
+        visited.insert(v1);
+        for (vertex* n : v1->neighs) { esearch.insert(edgebet(v1, n)); }
+      } else {
+        visited.insert(v2);
+        for (vertex* n : v2->neighs) { esearch.insert(edgebet(v2, n)); }
+      }
+    }
+  }
+  return cover;
+}
+
+// DFS
+vector<int> graphs::graph::dfs(vertex* start) {
+  vector<int> vlist;
+  stack<vertex*> vsearch;
+  set<vertex*> visited;
+  visited.insert(start);
+  vsearch.push(start);
+  while (!vsearch.empty()) {
+    vertex* v = vsearch.top();
+    vsearch.pop();
+    vlist.push_back(v->value);
+    for (vertex* n : v->neighs) {
+      if (visited.find(n) == visited.end()) {
+        visited.insert(n);
+        vsearch.push(n);
+      }
+    }
+  }
+  return vlist;
+}
+
+// BFS
+vector<int> graphs::graph::bfs(vertex* start) {
+  vector<int> vlist;
+  queue<vertex*> vsearch;
+  set<vertex*> visited;
+  vsearch.push(start);
+  while (!vsearch.empty()) {
+    vertex* v = vsearch.front();
+    vsearch.pop();
+    vlist.push_back(v->value);
+    for (vertex* n : v->neighs) {
+      if (visited.find(n) == visited.end()) {
+        vsearch.push(n);
+        visited.insert(n);
+      }
+    }
+  }
+  return vlist;
+}
+
+// Floyd Warshall
+vector<vector<int>> graphs::graph::floyd_warshall() {
+  vector<vector<int>> costs(
+      vertices.size(),
+      vector<int>(vertices.size(), numeric_limits<int>::max()));
+  for (int i = 0; i < vertices.size(); ++i) {
+    costs[i][i] = 0;
+    for (int j = 0; j < vertices.size(); ++j) {
+      if (i != j) {
+        if (edgeat[i][j] != nullptr) costs[i][j] = edgeat[i][j]->cost;
+      }
+    }
+  }
+  for (int i = 0; i < vertices.size(); ++i) {
+    for (int j = 0; j < vertices.size(); ++j) {
+      for (int k = 0; k < vertices.size(); ++k) {
+        costs[j][k] = min<long long>(costs[j][k], costs[j][i] + costs[i][k]);
+      }
+    }
+  }
+  return costs;
+}
+
