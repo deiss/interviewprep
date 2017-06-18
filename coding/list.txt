@@ -1,60 +1,15 @@
-# CS
-
-Master Theorem
-Big O
-
-# DATA STRUCTURES
-
 ## Complexity, Description
-HashMaps: Open Addressing vs Chaining
 Trees: BST Red-Black B-Tree AVL Splay Treap
 Heaps: Binary Binomial Fibonacci Pairing
 Graphs: Adj List Adj Mat Inc Mat
 
-## Implementation
-Stack:                                                       |
-Queue:                                                       |
-Vector:                                                      |
-HashMap:                                                     |
-BST: Search MinMax Succ/Pred Ins/Del Transplant/TreeDelete   | 1 1
-Queue: MaxHeapify BuildMaxHeap ExtractMax IncreaseKey Insert | 1 2
-
-# ALGORITHMS
-
-Sorts:
-    Selection | 
-    Ins       |
-    Quick     |
-    Heap      |
-    Counting  |
-    Radix     |
-    Merge     |
-    k-way     |
-Numbers:
-    GCD                 |
-    Select ith smallest |
-    Subsets             |
-    Permutations        |
-    Kadane              |
-    Binary Search       |
-    Closest Pair        |
-    KMP                 |
-    FFT                 |
-Graphs:
-    Bipartite matching
-    BFS       |
-    DFS       |
-    A*        |
-    Prim      |
-    EK        |
-    Topo Sort |
-    2-color   |
-    Traveling |
-    Floyd-W   |
-Linked Lists:
-    Floyd   |
-    LRU     |
-    CPU     |
+k-way
+FFT
+Bipartite matching
+A*
+EK
+LRU
+blossom filters
 
 
 

@@ -394,9 +394,53 @@ bool test_kmp() {
   return true;
 }
 
+bool test_closest_pair() {
+  int nb_tests = 1000;
+  int max_nb_points = 500;
+  int max_x = 100;
+  int max_y = 100;
+  for (int i = 0; i < nb_tests; ++i) {
+    int len = rand() % max_nb_points + 2;
+    vector<pair<double, double>> points(len);
+    set<double> x_values; x_values.insert(0);
+    for (int j = 0; j < len; ++j) {
+      double val_x = 0;
+      while (x_values.find(val_x) != x_values.end())
+        val_x = (rand() % (max_x * 10)) / 10.;
+      points[j].first = val_x;
+      x_values.insert(val_x);
+      points[j].second = (rand() % (max_y * 10)) / 10.;
+    }
+    double ans = closest_points(points);
+    double local_ans = -1;
+    pair<pair<double, double>, pair<double, double>> best;
+    for (int k = 0; k < len - 1; ++k) {
+      for (int l = k + 1; l < len; ++l) {
+        double d = sqrt(pow(points[k].first - points[l].first, 2) +
+                        pow(points[k].second - points[l].second, 2));
+        if (local_ans == -1 || d < local_ans) {
+          local_ans = d;
+          best.first = points[k];
+          best.second = points[l];
+        }
+      }
+    }
+    if (fabs(ans - local_ans) > 0.001) {
+      cout << endl;
+      cout << "  Error: Closest Pair()" << endl;
+      cout << "  Did not find the right closest pair ("
+          << ans << ", " << local_ans << ")" << endl;
+      cout << "  With (" << best.first.first << ", " << best.first.second <<
+          ") and (" << best.second.first << ", " << best.second.second << ")." << endl;
+      return false;
+    }
+  }
+  return true;
+}
+
 void run_tests() {
   int wrong = 0;
-  int nb = 7;
+  int nb = 8;
   int total = nb;
 
   cout << endl << "** NBRS **" << endl; 
@@ -460,6 +504,14 @@ void run_tests() {
     kmp("", "");
     cout << endl << "[TEST: KMP]" << endl;
     if (!test_kmp()) wrong++;
+    cout << endl;
+  } catch(const not_implemented_exc& e) {
+    total--;
+  }
+
+  try {
+    cout << endl << "[TEST: Closest Pair of Points]" << endl;
+    if (!test_closest_pair()) wrong++;
     cout << endl;
   } catch(const not_implemented_exc& e) {
     total--;

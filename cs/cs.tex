@@ -182,6 +182,91 @@ Consider any nonempty subproblem $S_k$, and let $a_m$ be an activity in $S_k$ wi
 
 \section{Divide and Conquer}
 
+  \subsection{Closest Pair of Points}
+
+Here is the algorithm under the assumption that all $x$ coordinates are different:
+
+\vspace{0.5cm}
+
+\IncMargin{2em}
+\begin{algorithm}[H]
+\SetKwInput{Input}{Input}
+\SetKwInput{Output}{Output}
+\SetKwFunction{ClosestRecursive}{ClosestRecursive}
+\caption{Closest Pair of Points}
+\vspace{0.1cm}
+\Indm
+\Input{Array of Points $p$}
+\Output{Distance between closest pair of points in $p$, $d$}
+\Indp
+\vspace{0.1cm}
+p\_x $\gets$ $p$\\
+p\_y $\gets$ $p$\\
+sort p\_x on \textit{x} coordinate\\
+sort p\_y on \textit{y} coordinate\\
+  \KwRet \ClosestRecursive{p\_x, p\_y}
+\end{algorithm}
+\DecMargin{2em}
+
+\vspace{0.5cm}
+
+\IncMargin{2em}
+\begin{algorithm}[H]
+\SetKwInput{Input}{Input}
+\SetKwInput{Output}{Output}
+\SetKwFunction{ClosestRecursive}{ClosestRecursive}
+\SetKwFunction{Distance}{Distance}
+\SetKwFunction{min}{min}
+\SetKwFunction{StripClosest}{StripClosest}
+\SetKwFunction{abs}{abs}
+\caption{Recursive Closest Pair of Points}
+\vspace{0.1cm}
+\Indm
+\Input{Array of points $p\_x$, $p\_y$, sorted on $x$ and $y$ coordinates}
+\Output{Distance between closest pair of points in $p\_x$}
+\Indp
+\vspace{0.1cm}
+\If{$p\_x.size() \le 3$}{
+  p\_1, p\_2 $\gets$ closest pair using bruteforce\\
+  \KwRet \Distance{p\_1, p\_2}
+}
+mid\_x $\gets p\_x[n/2]$\\
+p\_y\_l $\gets$ all points $p$ such that $p.x \le$ mid\_x.x, sorted on $y$, of size $\lfloor\frac{n}{2}\rfloor + 1$\\
+p\_y\_r $\gets$ all points $p$ such that $p.x > $ mid\_x.x, sorted on $y$, of size $n - \lfloor\frac{n}{2}\rfloor - 1$\\
+min\_l $\gets$ \ClosestRecursive{$p\_x$, $p\_y\_l$}\\
+min\_r $\gets$ \ClosestRecursive{$p\_x$, $p\_y\_r$}\\
+min\_d $\gets$ \min{min\_l, min\_r}\\
+strip $\gets$ all points $p$ such that \abs{$p.x$ - mid\_x.x} $<$ min\_d\\
+\KwRet \min{min\_d, \StripClosest{strip, min\_d}}\\
+\end{algorithm}
+\DecMargin{2em}
+
+\vspace{0.5cm}
+
+\IncMargin{2em}
+\begin{algorithm}[H]
+\SetKwInput{Input}{Input}
+\SetKwInput{Output}{Output}
+\SetKwFunction{min}{min}
+\SetKwFunction{Distance}{Distance}
+\SetKwFunction{abs}{abs}
+\caption{Strip Closest}
+\vspace{0.1cm}
+\Indm
+\Input{Minimum distance $min\_d$, Array of points $strip$, sorted on $y$}
+\Output{Lowest distance between $min\_d$ and points in $strip$}
+\Indp
+\vspace{0.1cm}
+min\_strip\_d = $min\_d$\\
+\ForEach{point $p$ in $strip$}{
+  \ForEach{point $n$ after $p$ in $strip$ such that \abs{$p$.y - $n$.y} $<$ min\_strip\_d}{
+    // will be executed at most 6 times\\
+    min\_strip\_d = \min{min\_strip\_d, \Distance{$p$, $n$}}
+  }
+}
+\end{algorithm}
+\DecMargin{2em}
+
   \subsection{Karatsuba Algorithm}
 
 The basic step of Karatsuba's algorithm is a formula that allows one to compute the product of two large numbers $x$ and $y$ using three multiplications of smaller numbers, each with about half as many digits as $x$ or $y$, plus some additions and digit shifts.
@@ -246,8 +331,7 @@ A graph or component of a graph is strongly connected if every vertex is reachab
 \ForEach{vertex $v$ of $G$}{
   mark $v$ as \textit{unvisited}
 }
-$L\gets$ empty list
-
+$L\gets$ empty list\\
 \ForEach{vertex $v$ of $G$}{
   \Visit{$v$}
 }
@@ -271,8 +355,7 @@ $L\gets$ empty list
 \Indp
 \vspace{0.1cm}
 \If{$v$ is unvisited}{
-  mark $v$ as visited
-
+  mark $v$ as visited\\
   \ForEach{\textit{out}-neighbour $u$ of $v$ ($v\rightarrow u$)}{
     \Visit{$u$}
   }
@@ -355,20 +438,15 @@ Caveats:
 \Output{Path $p$}
 \Indp
 \vspace{0.1cm}
-frontier $\gets$ empty priority queue ordered by path cost
-
-frontier.push($start$)
-
-visited $\gets$ empty set
-
+frontier $\gets$ empty priority queue ordered by path cost\\
+frontier.push($start$)\\
+visited $\gets$ empty set\\
 \While{frontier is not empty}{
-  node $\gets$ frontier.pop()
-
+  node $\gets$ frontier.pop()\\
   \If{node is $goal$}{
     \KwRet{True}
   }
-  visited.insert(node)
-
+  visited.insert(node)\\
   \ForEach{neighbour n of node}{
     \eIf{n not in visited or frontier}{
       frontier.push(n);
@@ -549,8 +627,7 @@ $C_{\text{max}}^{t}$ & $n^2$ & $n^2$ & $n\log(n)$ & $n^2$ & $n\log(n)$ \\
 \Indp
 \vspace{0.1cm}
   \For{$i=n-1$ \textbf{downto} $1$}{
-    j $\gets$ random integer such that $0 \le j \le i$
-
+    j $\gets$ random integer such that $0 \le j \le i$\\
     exchange \texttt{a[j]} and \texttt{a[i]}
   }
 \end{algorithm}

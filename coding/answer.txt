@@ -569,6 +569,87 @@ int nbrs::kmp(const string& pattern, const string& text) {
   return matches;
 }
 
+double nbrs::closest_points(const vector<pair<double, double>>& points) {
+  // Computes distance between two points
+  auto distance = [](const pair<double, double>& p1,
+                     const pair<double, double>& p2) -> double {
+    return sqrt(pow(p1.first - p2.first, 2) + pow(p1.second - p2.second, 2));
+  };
+
+  // Recursive util function
+  function<double(const vector<pair<double, double>>&,
+                  const vector<pair<double, double>>&,
+                  const int, const int)> closest_rec =
+      [&distance, &closest_rec](const vector<pair<double, double>>& p_x,
+                                const vector<pair<double, double>>& p_y,
+                                const int b, const int e) -> double {
+    // base cases
+    if (p_y.size() == 3) {
+      double v = min(distance(p_y[0], p_y[1]),
+                     min(distance(p_y[0], p_y[2]), distance(p_y[1], p_y[2])));
+      return v;
+    } else if (p_y.size() == 2) {
+      double v = distance(p_y[0], p_y[1]);
+      return v;
+    } else if (p_y.size() == 1) {
+      return -1;
+    }
+
+    // find middle point, split on mid.x using y-sorted array
+    int mid = (e - b + 1) / 2;
+    auto mid_p = p_x[b + mid];
+    vector<pair<double, double>> p_y_l;
+    vector<pair<double, double>> p_y_r;
+    for (int i = 0; i < p_y.size(); ++i) {
+      if (p_y_r.size() == p_y.size() - mid - 1 ||
+          (p_y_l.size() < mid + 1 && p_y[i].first <= mid_p.first)) {
+        p_y_l.push_back(p_y[i]);
+      } else {
+        p_y_r.push_back(p_y[i]);
+      }
+    }
+
+    // recursively find mins
+    double min_l = closest_rec(p_x, p_y_l, b, b + p_y_l.size() - 1);
+    double min_r = closest_rec(p_x, p_y_r, b + p_y_l.size(), e);
+    double min_d = min_l == -1
+        ? min_r
+        : min_r == -1
+            ? min_l
+            : min(min_l, min_r);
+
+    // merge case, using the strip
+    vector<pair<double, double>> strip;
+    for (int i = 0; i < p_y.size(); ++i) {
+      if (fabs(p_y[i].first - mid_p.first) < min_d) {
+        strip.push_back(p_y[i]);
+      }
+    }
+    for (int i = 0; i < strip.size(); ++i) {
+      for (int j = i + 1;
+           j < strip.size() && strip[j].second - strip[i].second < min_d; ++j) {
+        if (distance(strip[j], strip[i]) < min_d) {
+          min_d = distance(strip[j], strip[i]);
+        }
+      }
+    }
+    return min_d;
+  };
+
+  // Sorts on x and y and calls recursive function
+  vector<pair<double, double>> p_x(points.begin(), points.end());
+  vector<pair<double, double>> p_y(points.begin(), points.end());
+  sort(p_x.begin(), p_x.end(), [](const pair<double, double>& p1, 
+                                  const pair<double, double>& p2) {
+        return p1.first < p2.first;
+       });
+  sort(p_y.begin(), p_y.end(), [](const pair<double, double>& p1, 
+                                  const pair<double, double>& p2) {
+        return p1.second < p2.second;
+       });
+  return closest_rec(p_x, p_y, 0, p_x.size() - 1);
+}
+
 
 // ****************************************************************************
 // *** GRAPHS ***

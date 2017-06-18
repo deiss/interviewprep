@@ -1,6 +1,7 @@
 #ifndef NBRS
 #define NBRS
 
+#include <cmath>
 #include <set>
 
 namespace nbrs {
@@ -12,6 +13,7 @@ set<string> permutations(const string&);
 int kadane(const vector<int>&);
 bool binsearch(const vector<int>&, int);
 int kmp(const string&, const string&);
+double closest_points(const vector<pair<double, double>>&);
 
 }
 

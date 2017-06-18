@@ -168,6 +168,10 @@ int nbrs::kmp(const string& pattern, const string& text) {
   throw not_implemented_exc();
 }
 
+double nbrs::closest_points(const vector<pair<double, double>>& points) {
+  throw not_implemented_exc();
+}
+
 // ****************************************************************************
 // ** Graphs **
 // Variables: vertices, edges, v1, v2, cost, v, neighs
