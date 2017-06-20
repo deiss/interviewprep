@@ -364,9 +364,9 @@ The heap (also known as the "free store") is a large pool of memory used for dyn
 	
 A pointer points into a place in memory, so it would be 32 bits on a 32-bit system, and 64 bits in 64-bit system. In cases like pointers to virtual method table, the size of the pointer will differ, and it will vary on different platforms and even on different compilers within the same platform. In my case, for example (x64 ubuntu, GCC 4.6.3) it equals to 16 bytes.
 
-  \subsection{Stack (Hardware)}
+  \subsection*{Stack (Hardware)}
 
-    \subsubsection{Caller's actions before function call}
+    \subsubsection*{Caller's actions before function call}
 
 In our example, the caller is the main function and is about to call a function \texttt{foo}. Before the function call, main is using the \texttt{ESP} and \texttt{EBP} registers for its own stack frame.
 
@@ -423,7 +423,7 @@ EBP |      ...      |            |      ...      |
          Fig. 1                        Fig. 2                Fig. 3
 \end{verbatim}            
 
-		\subsubsection{Callee's actions after function call}
+		\subsubsection*{Callee's actions after function call}
 
 When the function \texttt{foo}, the callee, gets control of the program, it must do three things: set up its own stack frame, allocate space for local storage and save the contents of the registers \texttt{EBX}, \texttt{ESI} and \texttt{EDI} as needed.
 
@@ -449,6 +449,97 @@ The body of the function \texttt{foo} can now be executed. This might involve pu
 
 ~\\
 Execution of the function \texttt{foo} might also involve other function calls and even recursive calls to \texttt{foo}. However, as long as the \texttt{EBP} register is restored upon return from these calls, references to the arguments, local variables and temporary storage can continue to be made as offsets from \texttt{EBP}.
+
+\section{Threads}
+
+  \subsection{Definitions}
+
+    \subsubsection{Threads vs Processes}
+
+A process is an instance of a program in execution. It is given CPU time and memory, and each process is executed in a separate address space. To communicate between threads, inter-process communications have to be used (pipes, files, sockets, ...).
+
+~\\
+A thread exists within a process and shares the process' resources. Multiple threads share the same heap space. Each thread still has its own registers and its own stack, but other threads can read and write the heap memory.
+
+    \subsubsection{Context Switch}
+
+A context switch is the time spent switching between two processes. To compute the time spent during a context switch, you can use two processes that send each other data. 
+
+  \subsection*{Creating Threads}
+
+    \subsubsection*{Creating and launching a thread}
+
+\begin{lstlisting}[style=cpp]
+  #include <iostream>
+  #include <thread>
+  
+  void call_from_thread() {
+    std::cout << "Hello, World" << std::endl;
+  }
+
+  int main() {
+    //Launch a thread
+    std::thread t1(call_from_thread);
+
+    //Join the thread with the main thread
+    t1.join();
+
+    return 0;
+  }
+\end{lstlisting}
+
+    \subsubsection*{Creating multiple threads}
+
+\begin{lstlisting}[style=cpp]
+  static const int num_threads = 10;
+
+  int main() {
+    std::thread t[num_threads];
+
+    //Launch a group of threads
+    for (int i = 0; i < num_threads; ++i) {
+      t[i] = std::thread(call_from_thread);
+    }
+
+    std::cout << "Launched from the main\n";
+
+    //Join the threads with the main thread
+    for (int i = 0; i < num_threads; ++i) {
+      t[i].join();
+    }
+
+    return 0;
+  } 
+\end{lstlisting}
+
+    \subsubsection*{Launching a member class in a thread}
+
+When running member functions in threads, the following syntax can be used:
+\begin{lstlisting}[style=cpp]
+  thread t = thread(&obj::func, obj());
+\end{lstlisting}
+
+  \subsection*{Mutexes}
+
+    \subsubsection*{\texttt{std::mutex}}
+
+The class \texttt{std::mutex} can be used. It offers functions \texttt{lock} and \texttt{unlock}.
+
+    \subsubsection*{\texttt{std::lock\_guard}}
+
+Mutexes are usually not accessed directly, but through wrapper classes. One of them is \verb std::lock_guard<std::mutex> . The lock is acquired on creation and released on destruction, when the \texttt{guard} goes out of scope.
+
+\begin{lstlisting}[style=cpp]
+  std::lock_guard<std::mutex> guard(var_mutex);
+\end{lstlisting}
+
+    \subsubsection*{\texttt{std::unique\_lock}}
+
+If \verb std::lock_guard  is too simple, \texttt{std::unique\_lock} has more capabilities. \texttt{lock\_guard} always holds a lock from its construction to its destruction. A \texttt{unique\_lock} can be created without immediately locking, can unlock at any point in its existence, and can transfer ownership of the lock from one instance to another.
+
+  \subsection{Deadlocks}
+
+It is a situation where a thread is waiting for an object lock that another thread locks, and this second thread is waiting for an object lock that the first thread holds.
 
 \section*{Templates}
 
