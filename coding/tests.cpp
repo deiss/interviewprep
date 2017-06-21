@@ -394,7 +394,7 @@ bool test_kmp() {
   return true;
 }
 
-bool test_closest_pair() {
+bool test_closest_points() {
   int nb_tests = 1000;
   int max_nb_points = 500;
   int max_x = 100;
@@ -510,8 +510,10 @@ void run_tests() {
   }
 
   try {
+    vector<pair<double, double>> points({{1, 1}});
+    closest_points(points);
     cout << endl << "[TEST: Closest Pair of Points]" << endl;
-    if (!test_closest_pair()) wrong++;
+    if (!test_closest_points()) wrong++;
     cout << endl;
   } catch(const not_implemented_exc& e) {
     total--;

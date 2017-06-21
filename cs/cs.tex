@@ -168,16 +168,14 @@ $$\sum_{i=0}^{n}\left(\begin{array}{c}n\\ i\end{array}\right) = 2^n$$
 
 \section{Strings}
 
-  \subsection{Knuth-Morris-Prat vs. Rabin-Karp}
-
-    \subsubsection{String searching}
+  \subsection{String searching}
 
 Algorithms for string searching return indices of a pattern $p$ of length $k$ in a string $s$ of length $n$.
 
 ~\\
-The straigthforward algorithm for string searching is good in the expected case, but terrible in the worst case. If $s$ consists of one billion characters 'A', and the pattern in 999 characters 'A' followed by 'B', then the worst-case performance is $O(kn)$.
+The straigthforward algorithm for string searching is good in the expected case, but terrible in the worst case. If $s$ consists of one billion characters \textit{A}, and the pattern in 999 characters \textit{A} followed by \textit{B}, then the worst-case performance is $O(kn)$.
 
-    \subsubsection{KMP}
+  \subsection{KMP}
 
 The KMP algorithm uses a \textit{failure} table. At index $i$, the table equals the length of the longest proper prefix that is also suffix of the pattern $p$, considering the first $i+1$ characters of the pattern. A proper prefix is a prefix that is not the whole word. This table takes $O(k)$ to build, and allows the search portion of the algorithm to run in $O(n)$. Below is an example of the table for the string \textit{ABABABCA}:
 
@@ -192,7 +190,7 @@ The KMP algorithm uses a \textit{failure} table. At index $i$, the table equals 
 
 KMP works well on short patterns. On long patterns, Boyer-Moore might be a good alternative. This other algorithm matches from right to left.
 
-    \subsubsection{Rabin-Karp}
+  \subsection{Rabin-Karp}
 
 Instead of skipping forward, Rabin-Karp focuses on improving the match test. For this it uses a rolling hash function, so that the hash can be computed in constant time. If the current string and the pattern have same hash, then there is a match.
 
@@ -463,30 +461,30 @@ This problem is similar to finding the maximum flow in a graph:
 
     \subsubsection{Search Algorithms Comparison}
 
-For a graph with:
-\begin{itemize}
-  \item $b$: branching factor
-  \item $d$: depth of the shallowest solution
-  \item $m$: maximum depth of the search tree
-  \item $l$: depth limit
-\end{itemize}
 \begin{tabular}{|l|l|l|l|l|l|l|}
-  \hline
-  Criterion & BFS & UCS & DFS & Depth-Lim. & Iterative Deep. & Bidirectional\\ \hline
+  \cline{2-7}
+  \multicolumn{1}{c|}{} & BFS & UCS & DFS & Depth-Lim. & Iterative Deep. & Bidirectional\\ \hline
   Complete & Yes$^\text{a}$ & Yes$^\text{a,b}$ & No & No & Yes$^\text{a}$ & Yes$^\text{a,d}$\\ \hline
   Time & $O(b^d)$ & $O(b^{1+\lfloor C^*/\epsilon\rfloor})$ & $O(b^m)$ & $O(b^l)$ & $O(b^d)$ & $O(b^{d/2})$\\ \hline
   Space & $O(b^d)$ & $O(b^{1+\lfloor C^*/\epsilon\rfloor})$ & $O(bm)$ & $O(bl)$ & $O(bd)$ & $O(b^{d/2})$\\ \hline
   Optimal & Yes$^\text{c}$ & Yes & No & No & Yes$^\text{c}$ & Yes$^\text{c,d}$\\ \hline
 \end{tabular}
 
-~\\
-Caveats:
-\begin{itemize}
-  \item a: complete if $b$ is finite\
-  \item b: complete if step costs $\ge\epsilon$ for $\epsilon \ge 0$\
-  \item c: optimal if step costs are all identical\
-  \item d: if both directions use BFS\\
+\vspace{0.5cm}
+
+\begin{tabular}{p{8cm}p{7cm}}
+For a graph with: \begin{itemize}
+  \item $b$: branching factor
+  \item $d$: depth of shallowest solution
+  \item $m$: maximum depth of search tree
+  \item $l$: depth limit
+\end{itemize} & Caveats: \begin{itemize}
+  \item a: if $b$ is finite
+  \item b: if step costs $\ge\epsilon$ for $\epsilon \ge 0$
+  \item c: if step costs all identical
+  \item d: if both directions use BFS
 \end{itemize}
+\end{tabular}
 
   \subsection{Uniform Cost Search}
 
@@ -521,144 +519,6 @@ visited $\gets$ empty set\\
 \end{algorithm}
 \DecMargin{2em}
 
-\section{Data Structures}
-
-	\subsection{Arrays, Vectors, Linked Lists}
-
-		\subsubsection*{Complexity}
-	
-\begin{center}
-\begin{tabular}{| c | c | c | c |}
-\cline{2-4}
-\multicolumn{1}{c |}{} & Array/Vector & Linked List & Doubly Linked List \\
-\hline
-adding an element at the end & 1 or $n$ & 1 & 1 \\
-\hline
-erase an element at the end & 1 & $n$ & 1 \\
-\hline
-access to the $i^{\text{th}}$ element & 1 & $i$ & min($i$, $n-i$) \\
-\hline
-insert/erase the $i^{\text{th}}$ element & $n-i$ & $i$ & min($i$, $n-i$) \\
-\hline
-insert/erase the $i^{\text{th}}$ element (with iterators) & $n-i$ & $i$ & 1 \\
-\hline
-merge two data structures (sizes $n_{1}$ and $n_{2}$) & min($n_{1}, n_{2}$) & 1 & 1 \\
-\hline
-\end{tabular}
-\end{center}
-
-	\subsection{Binary Heap}
-	
-		\subsubsection*{Definitions}
-		
-A heap is a specialized tree-based data structure that satisfies the heap property : if A is a parent node of B then the key of node A is ordered with respect to the key of node B with the same ordering applying across the heap. Heaps can be classified further as either a "max heap" or a "min heap". In a max heap, the keys of parent nodes are always greater than or equal to those of the children and the highest key is in the root node.
-	
-		\subsubsection*{Complexity}
-
-\begin{center}	
-\begin{tabular}{| c | c | c | c | c | c |}
-\cline{2-6}
-\multicolumn{1}{c |}{} & Space & Search & Insert & Delete & Peek \\
-\hline
-Average & $n$ & $n$ & 1 & $\log(n)$ & 1 \\
-\hline
-Worst & $n$ & $n$ & $\log(n)$ & $\log(n)$ & 1 \\
-\hline
-\end{tabular}
-\end{center}
-
-  \subsection{Binary Search Tree}
-
-		\subsubsection*{Complexity}
-
-\begin{center}	
-\begin{tabular}{| c | c | c | c | c |}
-\cline{2-5}
-\multicolumn{1}{c |}{} & Space & Search & Insert & Delete \\
-\hline
-Average & $n$ & $\log(n)$ & $\log(n)$ & $\log(n)$ \\
-\hline
-Worst & $n$ & $n$ & $n$ & $n$ \\
-\hline
-\end{tabular}
-\end{center}
-	
-	\subsection{Hash Tables}
-	
-In computing, a hash table (hash map) is a data structure used to implement an associative array, a structure that can map keys to values. A hash table uses a hash function to compute an index into an array of buckets or slots, from which the desired value can be found.
-
-\begin{center}
-\begin{tabular}{| c | c | c |}
-\cline{2-3}
-\multicolumn{1}{c |}{} & Average & Worst \\
-\hline
-Space & $n$ & $n$ \\
-\hline
-Search & $1$ & $n$ \\
-\hline
-Insert & $1$ & $n$ \\
-\hline
-Delete & $1$ & $n$ \\
-\hline
-\end{tabular}
-\end{center}
-
-\section{Backtracking}
-
-	\subsection{First Valid Path}
-	
-\begin{lstlisting}[style=cpp]
-	(bool, State) branch_and_bound() {
-		State state = first_state;
-		return (backtrack(), state);
-	}
-	bool backtracking() {
-		if(valid(state)) {
-			if(final(state)) {
-				return true;
-			}
-			else {
-				vector<Extension> extensions = state.getExtensions();
-				for(Extension extension : extensions) {
-					State old = state;
-					state = extension;
-					if(backtrack()) return true;
-					state = old;
-				}
-			}
-		}
-		return false;
-	}
-\end{lstlisting}
-
-	\subsection{Branch and Bound}
-	
-\begin{lstlisting}[style=cpp]
-	(Score, State) branch_and_bound() {
-		State state = first_state;
-		Score sc_max = lowest_score;
-		State st_max;
-		backtrack();
-		return (sc_max, st_max);
-	}
-	void backtracking() {
-		if(valid(state)) {
-			if(score(state) > sc_max) {
-				sc_max = score(state);
-				st_max = state;
-			}
-			vector<Extension> extensions = state.getExtensions();
-			states.sort(DECREASING);
-			for(Extension extension : extensions) {
-				State old = state;
-				state = extension;
-				if(score(state) > sc_max) backtrack();
-				state = old;
-			}
-		}
-	}
-\end{lstlisting}
-
 \section{Sorting Algorithms}
 
 	\subsection{Complexity}
@@ -683,6 +543,51 @@ $C_{\text{max}}^{t}$ & $n^2$ & $n^2$ & $n\log(n)$ & $n^2$ & $n\log(n)$ \\
 \end{tabular}
 \end{center}
 
+\section{Geometry}
+
+  \subsection{Finding the Convex Hull: Graham's Scan}
+
+\IncMargin{2em}
+\begin{algorithm}[H]
+\SetKwInput{Input}{Input}
+\SetKwInput{Output}{Output}
+\SetKwFunction{Push}{Push}
+\SetKwFunction{NextToTop}{NextToTop}
+\SetKwFunction{Top}{Top}
+\SetKwFunction{Angle}{Angle}
+\SetKwFunction{Pop}{Pop}
+\caption{Graham's Scan}
+\vspace{0.1cm}
+\Indm
+\Input{List of points $Q$}
+\Output{Stack $S$, the convex hull}
+\Indp
+\vspace{0.1cm}
+$p_0 \gets$ point in $Q$ with minimum $y$-coordinate, or the leftmost such point in case of a tie\\
+  $\langle p_1, p_2, ..., p_m\rangle\gets$ remaining points in $Q$, sorted by polar angle in counterclockwise order around $p_0$ (if more than one point has the same angle, remove all but the one that is farthest from $p_0$)\\
+\If{$m < 2$}{
+  \KwRet{Error: Convex hull is empty}
+}
+$S\gets$ empty stack\\
+$S$.\Push{$p_0$}\\
+$S$.\Push{$p_1$}\\
+$S$.\Push{$p_2$}\\
+\For{i = 3 to $m$}{
+  \While{\Angle{$S$.\NextToTop{}, $S$.\Top{}, $p_i$} makes a non-left turn}{
+    $S$.\Pop{}
+  }
+  $S$.\Push{$p_i$}
+}
+\KwRet{$S$}
+\end{algorithm}
+\DecMargin{2em}
+\vspace{0.5cm}
+
+To order points $P, Q, R$, use vector product: $$a = \overrightarrow{PQ}\wedge\overrightarrow{QR} = \left(\begin{array}{c}x_q - x_p\\y_q - y_p\end{array}\right)\wedge\left(\begin{array}{c}x_r - x_q\\y_r - y_q\end{array}\right) = ||\overrightarrow{PQ}||\cdot||\overrightarrow{QR}||\cdot\sin(\overrightarrow{PQ}, \overrightarrow{QR})$$
+
+The orientation of points $P, Q, R$ is then:
+$$\left\{\begin{array}{ll}\text{straight line} & a = 0\\ \text{left turn} & a > 0\\ \text{right turn} & a < 0\end{array}\right.$$
+
 \section{Other Algorithms}
 
   \subsection{Fisher-Yates}
@@ -704,6 +609,58 @@ $C_{\text{max}}^{t}$ & $n^2$ & $n^2$ & $n\log(n)$ & $n^2$ & $n\log(n)$ \\
   }
 \end{algorithm}
 \DecMargin{2em}
+
+\section{Data Structures}
+
+	\subsection{Binary Heap}
+
+\textit{Min-heap property}: for each node $i$ other than the root, $A[$\texttt{parent(}$i$\texttt{)}$] \le A[i]$.
+
+\begin{center}	
+\begin{tabular}{| c | c | c | c | c | c |}
+\cline{2-6}
+\multicolumn{1}{c |}{} & Space & Search & Insert & Delete & Peek \\
+\hline
+Average & $n$ & $n$ & 1 & $\log(n)$ & 1 \\
+\hline
+Worst & $n$ & $n$ & $\log(n)$ & $\log(n)$ & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+  \subsection{Binary Search Tree}
+
+\textit{Binary-Search-Tree property}: let $x$ be a node in a BST. If $y$ is a node in the left subtree of $x$, then $y.key \le x.key$. If $y$ is a node in the right subtree of $x$, then $y.key > x.key$.
+
+\begin{center}	
+\begin{tabular}{| c | c | c | c | c |}
+\cline{2-5}
+\multicolumn{1}{c |}{} & Space & Search & Insert & Delete \\
+\hline
+Average & $n$ & $\log(n)$ & $\log(n)$ & $\log(n)$ \\
+\hline
+Worst & $n$ & $n$ & $n$ & $n$ \\
+\hline
+\end{tabular}
+\end{center}
+	
+	\subsection{Hash Tables}
+	
+\begin{center}
+\begin{tabular}{| c | c | c |}
+\cline{2-3}
+\multicolumn{1}{c |}{} & Average & Worst \\
+\hline
+Space & $n$ & $n$ \\
+\hline
+Search & $1$ & $n$ \\
+\hline
+Insert & $1$ & $n$ \\
+\hline
+Delete & $1$ & $n$ \\
+\hline
+\end{tabular}
+\end{center}
 
 \section{Design Patterns}
 

@@ -5,8 +5,6 @@ Graphs: Adj List Adj Mat Inc Mat
 
 k-way
 FFT
-Bipartite matching
-A*
 EK
 LRU
 blossom filters
