@@ -166,6 +166,69 @@ $$\sum_{i=0}^{n}\left(\begin{array}{c}n\\ i\end{array}\right) = 2^n$$
 \end{math}
 \end{center}
 
+\section{Strings}
+
+  \subsection{Knuth-Morris-Prat vs. Rabin-Karp}
+
+    \subsubsection{String searching}
+
+Algorithms for string searching return indices of a pattern $p$ of length $k$ in a string $s$ of length $n$.
+
+~\\
+The straigthforward algorithm for string searching is good in the expected case, but terrible in the worst case. If $s$ consists of one billion characters 'A', and the pattern in 999 characters 'A' followed by 'B', then the worst-case performance is $O(kn)$.
+
+    \subsubsection{KMP}
+
+The KMP algorithm uses a \textit{failure} table. At index $i$, the table equals the length of the longest proper prefix that is also suffix of the pattern $p$, considering the first $i+1$ characters of the pattern. A proper prefix is a prefix that is not the whole word. This table takes $O(k)$ to build, and allows the search portion of the algorithm to run in $O(n)$. Below is an example of the table for the string \textit{ABABABCA}:
+
+\begin{center}
+  \begin{tabular}{| l | c | c | c | c | c | c | c | c |}
+    \hline
+    Index & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\ \hline
+    Character & A & B & A & B & A & B & C & A \\ \hline
+    Value & 0 & 0 & 1 & 2 & 3 & 4 & 0 & 1 \\ \hline
+  \end{tabular}
+\end{center}
+
+KMP works well on short patterns. On long patterns, Boyer-Moore might be a good alternative. This other algorithm matches from right to left.
+
+    \subsubsection{Rabin-Karp}
+
+Instead of skipping forward, Rabin-Karp focuses on improving the match test. For this it uses a rolling hash function, so that the hash can be computed in constant time. If the current string and the pattern have same hash, then there is a match.
+
+\vspace{0.5cm}
+\IncMargin{2em}
+\begin{algorithm}[H]
+\SetKwInput{Input}{Input}
+\SetKwInput{Output}{Output}
+\SetKwFunction{Hash}{Hash}
+\caption{Rabin-Karp}
+\vspace{0.1cm}
+\Indm
+  \Input{String $s$ (length $n$), Pattern $p$ (length $k$)}
+\Output{Number of matches $m$}
+\Indp
+\vspace{0.1cm}
+hash\_pattern $\gets$ \Hash{$p$}\\
+$m \gets 0$\\
+\For{i from 0 to n-k}{
+  hs $\gets$ \Hash{$s$[i..i+k-1]}\\
+  \If{hs == hash\_pattern}{
+    \If{$s$[i..i+k-1] == $p$}{
+      $m$++
+    }
+  }
+}
+\KwRet{$m$}
+\end{algorithm}
+\DecMargin{2em}
+\vspace{0.5cm}
+
+The Rabin fingerprint is a popular rolling hash function. It treats every substring as a number in some base (e.g. 101).
+
+~\\
+The Rabin-Karp algorithm is inferior for single pattern searching to Knuth-Morris-Pratt algorithm, Boyer-Moore string search algorithm and other faster single pattern string searching algorithms because of its slow worst case behavior. However, it is an algorithm of choice for multiple pattern search, that is, if we want to find any of a large number, say $m$, fixed length patterns in a text all of the same size $k$, we can create a simple variant of the Rabin-Karp algorithm that uses a Bloom filter or a set data structure to check whether the hash of a given string belongs to a set of hash values of patterns we are looking for. This has a expected complexity of $O(n + mk)$.
+
 \section{Dynamic Programming -- Greedy}
 
   \subsection{Optimal Substructure}
@@ -503,14 +566,23 @@ Worst & $n$ & $n$ & $\log(n)$ & $\log(n)$ & 1 \\
 \hline
 \end{tabular}
 \end{center}
-	
-		\subsubsection*{Implementation}
-	
-A binary heap is a complete binary tree. Heaps are usually implemented with arrays. If the root is at index 0, then :
-\begin{center}
-	parent($i$) = floor($\frac{n-1}{2}$) \hspace{0.7cm} left($i$) = $2i+1$ \hspace{0.7cm} right($i$) = $2i+2$
-\end{center}
 
+  \subsection{Binary Search Tree}
+
+		\subsubsection*{Complexity}
+
+\begin{center}	
+\begin{tabular}{| c | c | c | c | c |}
+\cline{2-5}
+\multicolumn{1}{c |}{} & Space & Search & Insert & Delete \\
+\hline
+Average & $n$ & $\log(n)$ & $\log(n)$ & $\log(n)$ \\
+\hline
+Worst & $n$ & $n$ & $n$ & $n$ \\
+\hline
+\end{tabular}
+\end{center}
+	
 	\subsection{Hash Tables}
 	
 In computing, a hash table (hash map) is a data structure used to implement an associative array, a structure that can map keys to values. A hash table uses a hash function to compute an index into an array of buckets or slots, from which the desired value can be found.
