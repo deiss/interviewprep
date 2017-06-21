@@ -13,6 +13,7 @@
 \usepackage{fullpage}				% really narrow margins
 \usepackage{graphicx}				% \includegraphics
 \usepackage{amsmath}				% \text
+\usepackage{amsfonts}				% \mathbb
 \usepackage{multirow}				% \multirow		
 \usepackage{enumitem}				% \setitemsize
 \usepackage{appendix}				% appendix env
@@ -542,6 +543,62 @@ $C_{\text{max}}^{t}$ & $n^2$ & $n^2$ & $n\log(n)$ & $n^2$ & $n\log(n)$ \\
 \hline
 \end{tabular}
 \end{center}
+
+\section{Number}
+
+  \subsection{Modular Exponentiation}
+
+\vspace{0.5cm}
+\IncMargin{2em}
+\begin{algorithm}[H]
+\SetKwInput{Input}{Input}
+\SetKwInput{Output}{Output}
+\caption{Repeated Squaring}
+\vspace{0.1cm}
+\Indm
+\Input{$a\ge0$, $b\ge0$, $n>0$}
+\Output{$a^b\mod{n}$}
+\Indp
+\vspace{0.1cm}
+$d\gets1$\\
+$\langle b_k, b_{k-1}, ..., b_0\rangle\gets$ binary representation of $b$\\
+\For{i = k \textbf{downto} 0}{
+  $d\gets d\cdot d\mod{n}$\\
+  \If{$b_i$ == 1}{
+    $d\gets d\cdot a\mod{n}$
+  }
+}
+\KwRet{d}
+\end{algorithm}
+\DecMargin{2em}
+\vspace{0.5cm}
+
+  \subsection{Primality Testing}
+
+To test whether $n$ is prime, we use Fermat's theorem, that states that if $n$ is prime, then $\forall a \in\mathbb{Z}_n^+$, $a^{n-1} \equiv 1\mod{n}$, and we try with $a=2$.
+
+\vspace{0.5cm}
+\IncMargin{2em}
+\begin{algorithm}[H]
+\SetKwInput{Input}{Input}
+\SetKwInput{Output}{Output}
+\SetKwFunction{ModularExponentiation}{ModularExponentiation}
+\caption{Pseudoprime}
+\vspace{0.1cm}
+\Indm
+\Input{$n$, odd integer greater than 2}
+\Output{Whether $n$ is prime (hopefully) or composite (for sure)}
+\Indp
+\vspace{0.1cm}
+\If{\ModularExponentiation{$2$, $n-1$, $n$} $\not\equiv 1\mod{n}$}{
+  \KwRet{COMPOSITE}
+}
+\KwRet{PRIME}
+\end{algorithm}
+\DecMargin{2em}
+\vspace{0.5cm}
+
+A randomly chosen 512-bit number that is called prime by the above procedure has less than one change in $10^{20}$ of being a base-2 pseudoprime, and a randomly-chosen 1024-bit number that is called prime has less than one change in $10^{41}$ of being a base-2 pseudoprime.
 
 \section{Geometry}
 
