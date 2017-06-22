@@ -37,6 +37,8 @@
 \usepackage{algpseudocode}
 \usepackage[linesnumbered, ruled]{algorithm2e}
 \usepackage{stmaryrd}
+\newcommand\commentfont[1]{\footnotesize\ttfamily\textcolor{gray}{#1}}
+\SetCommentSty{commentfont}
 
  %code (default C++)
 \usepackage{listings}
@@ -219,13 +221,13 @@ Instead of skipping forward, Rabin-Karp focuses on improving the match test. For
 \Output{Number of matches $m$}
 \Indp
 \vspace{0.1cm}
-hash\_pattern $\gets$ \Hash{$p$}\\
+$hash\_pattern$ $\gets$ \Hash{$p$}\\
 $m \gets 0$\\
-\For{i from 0 to n-k}{
-  hs $\gets$ \Hash{$s$[i..i+k-1]}\\
-  \If{hs == hash\_pattern}{
-    \If{$s$[i..i+k-1] == $p$}{
-      $m$++
+\For{$i$ from 0 to $n-k$}{
+  $hs\gets$ \Hash{$s$[$i$\ ..\ $i+k-1$]}\\
+  \If{$hs$ == $hash\_pattern$}{
+    \If{$s$[$i$\ ..\ $i+k-1$] == $p$}{
+      $m\gets m+1$
     }
   }
 }
@@ -238,6 +240,61 @@ The Rabin fingerprint is a popular rolling hash function. It treats every substr
 
 ~\\
 The Rabin-Karp algorithm is inferior for single pattern searching to Knuth-Morris-Pratt algorithm, Boyer-Moore string search algorithm and other faster single pattern string searching algorithms because of its slow worst case behavior. However, it is an algorithm of choice for multiple pattern search, that is, if we want to find any of a large number, say $m$, fixed length patterns in a text all of the same size $k$, we can create a simple variant of the Rabin-Karp algorithm that uses a Bloom filter or a set data structure to check whether the hash of a given string belongs to a set of hash values of patterns we are looking for. This has a expected complexity of $O(n + mk)$.
+
+  \subsection{Permutations}
+
+Heap's iterative algorithm for permutations is one of the most efficient. However, the one used in STL that produces permutations in lexicographical order is easier to remember:
+
+\vspace{0.5cm}
+\IncMargin{2em}
+\begin{algorithm}[H]
+\SetKwInput{Input}{Input}
+\SetKwInput{Output}{Output}
+\SetKwFunction{Swap}{Swap}
+\caption{NextPermutation}
+\vspace{0.1cm}
+\Indm
+\Input{String $s$ (length $N$)}
+\Output{Boolean, whether the cycle of permutations is the same one}
+\Indp
+\vspace{0.1cm}
+\If{$N\le 1$}{
+  \KwRet{FALSE}
+}
+$i\gets N-2$\\
+\While{$i \ge 0$}{
+  \If{$s$[$i$] $<$ $s$[$i+1$]}{
+    $j\gets N-1$\\
+    \While{$s$[$i$] $\ge$ $s$[$j$]}{
+      $j\gets j-1$\\
+    }
+    \Swap{$s$[$i$], $s$[$j$]}\\
+    \vspace{0.1cm}
+    \tcp{Reverse end of string}
+    $i\gets i+1$\\
+    $j\gets N-1$\\
+    \While{$i < j$}{
+      \Swap{$s$[$i$], s[$j$]}\\
+      $i\gets i+1$\\
+      $j\gets j-1$\\
+    }
+    \KwRet{TRUE}
+  }
+  $i\gets i-1$\\
+}
+\vspace{0.1cm}
+\tcp{Cycle of permutations complete, reverse whole string to start again}
+$i\gets 0$\\
+$j\gets N-1$\\
+\While{$i < j$}{
+  \Swap{$s$[$i$], s[$j$]}\\
+  $i\gets i+1$\\
+  $j\gets j-1$\\
+}
+\KwRet{FALSE}
+\end{algorithm}
+\DecMargin{2em}
+\vspace{0.5cm}
 
 \section{Dynamic Programming -- Greedy}
 
@@ -270,14 +327,12 @@ Here is the algorithm under the assumption that all $x$ coordinates are differen
 \vspace{0.1cm}
 \Indm
 \Input{Array of Points $p$}
-\Output{Distance between closest pair of points in $p$, $d$}
+\Output{Distance between closest pair of points in $p$}
 \Indp
 \vspace{0.1cm}
-p\_x $\gets$ $p$\\
-p\_y $\gets$ $p$\\
-sort p\_x on \textit{x} coordinate\\
-sort p\_y on \textit{y} coordinate\\
-  \KwRet \ClosestRecursive{p\_x, p\_y}
+$p\_x\gets p$ sorted on $x$ coordinate\\
+$p\_y\gets p$ sorted on $y$ coordinate\\
+\KwRet \ClosestRecursive{p\_x, p\_y, 0}
 \end{algorithm}
 \DecMargin{2em}
 
@@ -292,49 +347,41 @@ sort p\_y on \textit{y} coordinate\\
 \SetKwFunction{min}{min}
 \SetKwFunction{StripClosest}{StripClosest}
 \SetKwFunction{abs}{abs}
+\SetKwFunction{size}{size}
 \caption{Recursive Closest Pair of Points}
 \vspace{0.1cm}
 \Indm
-\Input{Array of points $p\_x$, $p\_y$, sorted on $x$ and $y$ coordinates}
-\Output{Distance between closest pair of points in $p\_x$}
+\Input{Array of points $p\_x$, $p\_y$, sorted on $x$ and $y$ coordinates, Integer $b$, index for the beginning of the area of interest in the array $p\_x$}
+\Output{Distance between closest pair of points in $p\_y$}
 \Indp
 \vspace{0.1cm}
-\If{$p\_x.size() \le 3$}{
-  p\_1, p\_2 $\gets$ closest pair using bruteforce\\
-  \KwRet \Distance{p\_1, p\_2}
+\tcp{Bases cases}
+\uIf{$p\_y.size() == 1$}{
+  \KwRet $-1$
+}\ElseIf{$p\_y.size() \le 3$}{
+  \KwRet distance between closest points by bruteforce
 }
-mid\_x $\gets p\_x[n/2]$\\
-p\_y\_l $\gets$ all points $p$ such that $p.x \le$ mid\_x.x, sorted on $y$, of size $\lfloor\frac{n}{2}\rfloor + 1$\\
-p\_y\_r $\gets$ all points $p$ such that $p.x > $ mid\_x.x, sorted on $y$, of size $n - \lfloor\frac{n}{2}\rfloor - 1$\\
-min\_l $\gets$ \ClosestRecursive{$p\_x$, $p\_y\_l$}\\
-min\_r $\gets$ \ClosestRecursive{$p\_x$, $p\_y\_r$}\\
-min\_d $\gets$ \min{min\_l, min\_r}\\
-strip $\gets$ all points $p$ such that \abs{$p.x$ - mid\_x.x} $<$ min\_d\\
-\KwRet \min{min\_d, \StripClosest{strip, min\_d}}\\
-\end{algorithm}
-\DecMargin{2em}
-
-\vspace{0.5cm}
-
-\IncMargin{2em}
-\begin{algorithm}[H]
-\SetKwInput{Input}{Input}
-\SetKwInput{Output}{Output}
-\SetKwFunction{min}{min}
-\SetKwFunction{Distance}{Distance}
-\SetKwFunction{abs}{abs}
-\caption{Strip Closest}
 \vspace{0.1cm}
-\Indm
-\Input{Minimum distance $min\_d$, Array of points $strip$, sorted on $y$}
-\Output{Lowest distance between $min\_d$ and points in $strip$}
-\Indp
-\vspace{0.1cm}
-min\_strip\_d = $min\_d$\\
+\tcp{Find closest pairs in left and right areas}
+$mid\gets\lfloor\frac{p\_y.\size{}}{2}\rfloor$\\
+$mid\_x$ $\gets p\_x[mid]$\\
+$p\_y\_l$ $\gets$ all points $p$ such that $p.x \le$ mid\_x.x, sorted on $y$, of size $mid + 1$\\
+$p\_y\_r$ $\gets$ all points $p$ such that $p.x > $ mid\_x.x, sorted on $y$, of size $n - mid - 1$\\
+$min\_l$ $\gets$ \ClosestRecursive{$p\_x$, $p\_y\_l$, b}\\
+$min\_r$ $\gets$ \ClosestRecursive{$p\_x$, $p\_y\_r$, b + $mid$ + 1}\\
+$min\_d$ $\gets$ \min{min\_l, min\_r}\\
+\uIf{$min\_l$ == $-1$}{
+  $min\_d\gets min\_r$
+}\ElseIf{$min\_r$ == $-1$}{
+  $min\_d\gets min\_l$
+}
+  \vspace{0.15cm}
+\tcp{Look for a closer pair in the strip between the left and right areas}
+$strip\gets$ all points $p$ such that \abs{$p.x$ - mid\_x.x} $< min\_d$, sorted on $y$\\
 \ForEach{point $p$ in $strip$}{
-  \ForEach{point $n$ after $p$ in $strip$ such that \abs{$p$.y - $n$.y} $<$ min\_strip\_d}{
-    // will be executed at most 6 times\\
-    min\_strip\_d = \min{min\_strip\_d, \Distance{$p$, $n$}}
+  \ForEach{point $n$ after $p$ in $strip$ such that $n.y - p.y < min\_d$}{
+    \tcp{Stop if condition is not met, will be executed at most 6 times}
+    $min\_d$ = \min{min\_d, \Distance{$p$, $n$}}
   }
 }
 \end{algorithm}
@@ -504,27 +551,32 @@ For a graph with: \begin{itemize}
 \begin{algorithm}[H]
 \SetKwInput{Input}{Input}
 \SetKwInput{Output}{Output}
+\SetKwFunction{pop}{pop}
+\SetKwFunction{push}{push}
+\SetKwFunction{insert}{insert}
 \caption{Uniform Cost Search}
 \vspace{0.1cm}
 \Indm
 \Input{Graph $g$, Node $start$, Node $goal$}
-\Output{Path $p$}
+\Output{Path $p$, or whether there is a path}
 \Indp
 \vspace{0.1cm}
-frontier $\gets$ empty priority queue ordered by path cost\\
-frontier.push($start$)\\
-visited $\gets$ empty set\\
+$frontier\gets$ empty priority queue ordered by path cost\\
+$frontier$.push($start$)\\
+$visited\gets$ empty set\\
 \While{frontier is not empty}{
-  node $\gets$ frontier.pop()\\
-  \If{node is $goal$}{
-    \KwRet{True}
+  $node\gets frontier$.\pop{}\\
+  \If{$node$ == $goal$}{
+    \KwRet{TRUE}
   }
-  visited.insert(node)\\
-  \ForEach{neighbour n of node}{
-    \eIf{n not in visited or frontier}{
-      frontier.push(n);
+  $visited$.\insert{$node$}\\
+  \ForEach{neighbour $n$ of $node$}{
+    \eIf{$n$ not in $visited$ or $frontier$}{
+      update cost, parents if needed\\
+      $frontier$.\push{$n$};
     }{
-      replace that frontier node with n
+      update cost, parents if needed\\
+      replace $node$ in frontier with $n$
     }
   }
 }
@@ -619,11 +671,11 @@ A randomly chosen 512-bit number that is called prime by the above procedure has
 \begin{algorithm}[H]
 \SetKwInput{Input}{Input}
 \SetKwInput{Output}{Output}
-\SetKwFunction{Push}{Push}
-\SetKwFunction{NextToTop}{NextToTop}
-\SetKwFunction{Top}{Top}
-\SetKwFunction{Angle}{Angle}
-\SetKwFunction{Pop}{Pop}
+\SetKwFunction{push}{push}
+\SetKwFunction{NextToTop}{next\_to\_top}
+\SetKwFunction{top}{top}
+\SetKwFunction{angle}{angle}
+\SetKwFunction{pop}{pop}
 \caption{Graham's Scan}
 \vspace{0.1cm}
 \Indm
@@ -637,14 +689,14 @@ $p_0 \gets$ point in $Q$ with minimum $y$-coordinate, or the leftmost such point
   \KwRet{Error: Convex hull is empty}
 }
 $S\gets$ empty stack\\
-$S$.\Push{$p_0$}\\
-$S$.\Push{$p_1$}\\
-$S$.\Push{$p_2$}\\
+$S$.\push{$p_0$}\\
+$S$.\push{$p_1$}\\
+$S$.\push{$p_2$}\\
 \For{i = 3 to $m$}{
-  \While{\Angle{$S$.\NextToTop{}, $S$.\Top{}, $p_i$} makes a non-left turn}{
-    $S$.\Pop{}
+  \While{\angle{$S$.\NextToTop{}, $S$.\top{}, $p_i$} makes a non-left turn}{
+    $S$.\pop{}
   }
-  $S$.\Push{$p_i$}
+  $S$.\push{$p_i$}
 }
 \KwRet{$S$}
 \end{algorithm}
@@ -664,6 +716,7 @@ $$\left\{\begin{array}{ll}\text{straight line} & a = 0\\ \text{left turn} & a > 
 \begin{algorithm}[H]
 \SetKwInput{Input}{Input}
 \SetKwInput{Output}{Output}
+\SetKwFunction{swap}{swap}
 \caption{Fisher-Yates}
 \vspace{0.1cm}
 \Indm
@@ -672,8 +725,8 @@ $$\left\{\begin{array}{ll}\text{straight line} & a = 0\\ \text{left turn} & a > 
 \Indp
 \vspace{0.1cm}
   \For{$i=n-1$ \textbf{downto} $1$}{
-    j $\gets$ random integer such that $0 \le j \le i$\\
-    exchange \texttt{a[j]} and \texttt{a[i]}
+    $j\gets$ random integer such that $0 \le j \le i$\\
+    \swap{$a$[$j$], $a$[$i$]}
   }
 \end{algorithm}
 \DecMargin{2em}
