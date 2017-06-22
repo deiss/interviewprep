@@ -172,6 +172,10 @@ double nbrs::closest_points(const vector<pair<double, double>>& points) {
   throw not_implemented_exc();
 }
 
+bool nbrs::is_prime(long long int nb) {
+  throw not_implemented_exc();
+}
+
 // ****************************************************************************
 // ** Graphs **
 // Variables: vertices, edges, v1, v2, cost, v, neighs

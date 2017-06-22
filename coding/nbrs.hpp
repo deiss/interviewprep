@@ -14,6 +14,7 @@ int kadane(const vector<int>&);
 bool binsearch(const vector<int>&, int);
 int kmp(const string&, const string&);
 double closest_points(const vector<pair<double, double>>&);
+bool is_prime(long long int);
 
 }
 

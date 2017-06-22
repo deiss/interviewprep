@@ -427,7 +427,7 @@ spatial & $n+m$ & $n^2$ \\
 \end{tabular}
 \end{center}
 
-  \subsection{Other Algorithms}
+  \subsection{Algorithms}
 
     \subsubsection{Strongly Connected Components}
 
@@ -683,7 +683,7 @@ A randomly chosen 512-bit number that is called prime by the above procedure has
 \Output{Stack $S$, the convex hull}
 \Indp
 \vspace{0.1cm}
-$p_0 \gets$ point in $Q$ with minimum $y$-coordinate, or the leftmost such point in case of a tie\\
+$p_0 \gets$ point in $Q$ with minimum $y$-coordinate, leftmost point in case of a tie\\
   $\langle p_1, p_2, ..., p_m\rangle\gets$ remaining points in $Q$, sorted by polar angle in counterclockwise order around $p_0$ (if more than one point has the same angle, remove all but the one that is farthest from $p_0$)\\
 \If{$m < 2$}{
   \KwRet{Error: Convex hull is empty}
@@ -766,23 +766,15 @@ Worst & $n$ & $n$ & $n$ & $n$ \\
 \end{center}
 	
 	\subsection{Hash Tables}
-	
-\begin{center}
-\begin{tabular}{| c | c | c |}
-\cline{2-3}
-\multicolumn{1}{c |}{} & Average & Worst \\
-\hline
-Space & $n$ & $n$ \\
-\hline
-Search & $1$ & $n$ \\
-\hline
-Insert & $1$ & $n$ \\
-\hline
-Delete & $1$ & $n$ \\
-\hline
-\end{tabular}
-\end{center}
 
+Collisions can be dealt with using chaining or open-addressing.
+
+  \subsection{Fenwick Trees}
+
+  \subsection{Union-Find Disjoint Sets}
+
+  \subsection{Segment Trees}
+	
 \section{Design Patterns}
 
 	\subsection{Iterator Pattern}

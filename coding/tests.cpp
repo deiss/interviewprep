@@ -394,6 +394,52 @@ bool test_kmp() {
   return true;
 }
 
+bool test_is_prime() {
+  vector<long long int> composites = {
+      1299722, 1300074, 1300425, 1300753,
+      1299747, 1300099, 1300427, 1300772,
+      1299765, 1300113, 1300437, 1300775,
+      1299793, 1300128, 1300452, 1300783,
+      1299814, 1300131, 1300459, 1300817,
+      1299819, 1300135, 1300467, 1300831,
+      1299822, 1300140, 1300473, 1300839,
+      1299829, 1300143, 1300481, 1300844,
+      1299837, 1300149, 1300489, 1300847,
+      1299843, 1300157, 1300503, 1300911,
+      1299861, 1300182, 1300512, 1300922,
+  };
+  vector<long long int> primes = {
+      1299721, 1300073, 1300421, 1300751,
+      1299743, 1300097, 1300423, 1300769,
+      1299763, 1300111, 1300433, 1300771,
+      1299791, 1300127, 1300451, 1300781,
+      1299811, 1300129, 1300457, 1300813,
+      1299817, 1300133, 1300463, 1300829,
+      1299821, 1300139, 1300471, 1300837,
+      1299827, 1300141, 1300477, 1300841,
+      1299833, 1300147, 1300487, 1300843,
+      1299841, 1300153, 1300501, 1300907,
+      1299853, 1300181, 1300511, 1300921,
+  };
+  for (auto p: composites) {
+    if (is_prime(p)) {
+      cout << endl;
+      cout << "  Error: is_prime()" << endl;
+      cout << "  Classified " << p << " as prime (it is composite)" << endl;
+      return false;
+    }
+  }
+  for (auto p: primes) {
+    if (!is_prime(p)) {
+      cout << endl;
+      cout << "  Error: is_prime()" << endl;
+      cout << "  Classified " << p << " as composite (it is prime)" << endl;
+      return false;
+    }
+  }
+  return true;
+}
+
 bool test_closest_points() {
   int nb_tests = 1000;
   int max_nb_points = 500;
@@ -440,7 +486,7 @@ bool test_closest_points() {
 
 void run_tests() {
   int wrong = 0;
-  int nb = 8;
+  int nb = 9;
   int total = nb;
 
   cout << endl << "** NBRS **" << endl; 
@@ -514,6 +560,15 @@ void run_tests() {
     closest_points(points);
     cout << endl << "[TEST: Closest Pair of Points]" << endl;
     if (!test_closest_points()) wrong++;
+    cout << endl;
+  } catch(const not_implemented_exc& e) {
+    total--;
+  }
+
+  try {
+    is_prime(200);
+    cout << endl << "[TEST: Primality]" << endl;
+    if (!test_is_prime()) wrong++;
     cout << endl;
   } catch(const not_implemented_exc& e) {
     total--;

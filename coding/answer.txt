@@ -686,6 +686,21 @@ double nbrs::closest_points(const vector<pair<double, double>>& points) {
   return closest_rec(p_x, p_y, 0);
 }
 
+bool nbrs::is_prime(long long int nb) {
+  auto modexp = [](long long int a, long long int b, long long int n) {
+    long long int d = 1;
+    int nb_dig = 1 + (int)log2(b);
+    for (int i = nb_dig; i >= 1; --i) {
+      d = (d*d) % n;
+      if (b & (1LL << (i-1))) {   // be sure to use a long long bitmask
+        d = (d*a) % n;
+      }
+    }
+    return d;
+  };
+  return modexp(2, nb - 1, nb) % nb == 1;
+}
+
 
 // ****************************************************************************
 // *** GRAPHS ***
