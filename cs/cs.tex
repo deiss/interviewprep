@@ -167,6 +167,17 @@ $$\sum_{i=0}^{n}\left(\begin{array}{c}n\\ i\end{array}\right) = 2^n$$
 \end{math}
 \end{center}
 
+  \subsection{Two's Complement}
+
+A non-negative number is represented by its ordinary binary representation. For a negative number, $-a$, take the binary representation of $a$, invert all the bits, and add one to get the two's complement.
+
+~\\
+The value $w$ of an $N$-bit integer $a_{N-1}a_{N-2}...a_0$ in the two's complement form is given by the formula:
+$$w = -a_{N-1}2^{N-1} + \sum_{i=0}^{N-2}a_i2^i$$
+
+~\\
+The one's complement is obtained by simply flipping all the bits of the number.
+
 \section{Strings}
 
   \subsection{String searching}

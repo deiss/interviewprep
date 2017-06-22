@@ -476,7 +476,47 @@ set<string> nbrs::subsets(const string& letters) {
   return ans;
 }
 
-// Permutations
+// Permutations - Iterative STL algorithm
+set<string> nbrs::permutations(const string& letters) {
+  set<string> perms;
+  if (letters.size() <= 1) {
+    perms.insert(letters);
+    return perms;
+  }
+
+  // Computes the next permutation and returns false if new cycle.
+  auto next_p = [](string& s) {
+    int i = s.size() - 2;
+    while (i >= 0) {
+      if (s[i] < s[i+1]) {
+        int j = s.size() - 1;
+        while (s[i] >= s[j]) {
+          j--;
+        }
+        swap(s[i], s[j]);
+        i++;
+        j = s.size() - 1;
+        while (i < j) {
+          swap(s[i++], s[j--]);
+        }
+        return true;
+      }
+      --i;
+    }
+    i = 0;
+    int j = s.size() - 1;
+    while (i < j) {
+      swap(s[i++], s[j--]);
+    }
+    return false;
+  };
+
+  auto work = letters;
+  while (perms.insert(work), cout << work << endl, next_p(work)) ;
+  return perms;
+}
+
+// Permutations - Recursive
 set<string> nbrs::permutations(const string& letters) {
   set<string> ans;
   function<void(const string&, const string&)> local =
