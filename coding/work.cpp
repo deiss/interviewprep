@@ -206,3 +206,9 @@ vector<vector<int>> graphs::graph::floyd_warshall() {
   throw not_implemented_exc();
 }
 
+vector<vector<const graphs::vertex*>>
+graphs::graph::biconnected_components(const vertex* start,
+                                      set<int>& apoints) const {
+  throw not_implemented_exc();
+}
+

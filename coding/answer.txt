@@ -856,3 +856,57 @@ vector<vector<int>> graphs::graph::floyd_warshall() {
   return costs;
 }
 
+// Biconnected Components
+// Returns the components by value, the articulation points by reference
+vector<vector<const graphs::vertex*>>
+graphs::graph::biconnected_components(const vertex* start,
+                                      set<int>& apoints) const {
+  vector<vector<const vertex*>> answer;
+  map<const vertex*, const vertex*> parents;
+  map<const vertex*, int> depth;
+  map<const vertex*, int> low;    // highest depth reachable if parent is cut
+  set<const vertex*> visited;
+  stack<const vertex*> s;         // stack of all points visited
+
+  // Depth-First Search with additional information
+  function<void(const vertex*, int)> dfs = [&](const vertex* v, int d) {
+    depth[v] = d;
+    low[v] = d;
+    visited.insert(v);
+    s.push(v);
+    int children = 0;      // Root of DFS is articulation only if children > 1
+    bool articulation = false;
+    for (auto* n : v->neighs) {
+      if (visited.find(n) == visited.end()) {
+        parents[n] = v;
+        dfs(n, d+1);
+        children++;
+        if (low[n] >= depth[v]) {
+          articulation = true;
+          // Add the biconnected group to the list of components
+          vector<const vertex*> group;
+          group.push_back(v);
+          while (group.back() != n) {
+            group.push_back(s.top());
+            s.pop();
+          }
+          answer.push_back(group);
+        }
+        low[v] = min(low[v], low[n]);
+      } else if (n != parents[v]) {
+        low[v] = min(low[v], depth[n]);
+      }
+    }
+    if ((parents[v] != nullptr && articulation) ||
+        (parents[v] == nullptr && children > 1)) {
+      // Add the vertex to the list of articulation points
+      apoints.insert(v->value);
+    }
+  };
+
+  parents[start] = nullptr;
+  dfs(start, 0);
+  return answer;
+}
+
+

@@ -715,9 +715,77 @@ bool test_floyd_warshall() {
   return true;
 }
 
+bool test_biconnected_components() {
+  graph g1 = graph::build_graph(false);
+  set<set<int>> check1({ {2, 4}, {1, 2}, {2, 3, 10, 8, 6, 9, 7, 5} });
+  set<int> apoints1({2});
+  for (vertex* start : g1.vertices) {
+    set<int> apoints;
+    auto answer1 = g1.biconnected_components(start, apoints);
+    set<set<int>> ans1_to_set;
+    for (auto& c : answer1) {
+      //cout << "group: ";
+      set<int> s;
+      for (auto* v : c) {
+        //cout << v->value << " ";
+        s.insert(v->value);
+      }
+      ans1_to_set.insert(s);
+      //cout << endl;
+    }
+    if (ans1_to_set != check1) {
+      cout << endl;
+      cout << "  Error: biconnected_components()" << endl;
+      cout << "  Wrong set of components" << endl;
+      return false;
+    }
+    //for (auto i : apoints) cout << i << " ";
+    if (apoints != apoints1) {
+      cout << endl;
+      cout << "  Error: biconnected_components()" << endl;
+      cout << "  Wrong set of articulation points" << endl;
+      return false;
+    }
+  }
+
+  graph g2 = graph::build_graph(false, false, true);
+  set<set<int>> check2({ {2, 4}, {1, 2}, {2, 3, 7, 5}, {7, 10, 8, 6, 9} });
+  set<int> apoints2({2, 7});
+  for (vertex* start : g2.vertices) {
+    set<int> apoints;
+    auto answer2 = g2.biconnected_components(start, apoints);
+    set<set<int>> ans2_to_set;
+    for (auto& c : answer2) {
+      //cout << "group: ";
+      set<int> s;
+      for (auto* v : c) {
+        //cout << v->value << " ";
+        s.insert(v->value);
+      }
+      ans2_to_set.insert(s);
+      //cout << endl;
+    }
+    if (ans2_to_set != check2) {
+      cout << endl;
+      cout << "  Error: biconnected_components()" << endl;
+      cout << "  Wrong set of components" << endl;
+      return false;
+    }
+    //for (auto i : apoints) cout << i << " ";
+    if (apoints != apoints2) {
+      cout << endl;
+      cout << "  Error: biconnected_components()" << endl;
+      cout << "  Wrong set of articulation points" << endl;
+      return false;
+    }
+  }
+
+  return true;
+}
+
 void run_tests() {
   int wrong = 0;
-  int nb = 6;
+  int nb = 7;
   int total = nb;
 
   cout << endl << "** GRAPHS **" << endl; 
@@ -771,6 +839,15 @@ void run_tests() {
     graph g; g.floyd_warshall();
     cout << endl << "[TEST: Floyd-Warshall]" << endl;
     if (!test_floyd_warshall()) wrong++;
+    cout << endl;
+  } catch(const not_implemented_exc& e) {
+    total--;
+  }
+
+  try {
+    graph g; set<int> s; g.biconnected_components(g.add_vertex(1), s);
+    cout << endl << "[TEST: Biconnected Components]" << endl;
+    if (!test_biconnected_components()) wrong++;
     cout << endl;
   } catch(const not_implemented_exc& e) {
     total--;

@@ -375,7 +375,7 @@ $min\_d$ $\gets$ \min{min\_l, min\_r}\\
 }\ElseIf{$min\_r$ == $-1$}{
   $min\_d\gets min\_l$
 }
-  \vspace{0.15cm}
+\vspace{0.15cm}
 \tcp{Look for a closer pair in the strip between the left and right areas}
 $strip\gets$ all points $p$ such that \abs{$p.x$ - mid\_x.x} $< min\_d$, sorted on $y$\\
 \ForEach{point $p$ in $strip$}{
@@ -427,7 +427,81 @@ spatial & $n+m$ & $n^2$ \\
 \end{tabular}
 \end{center}
 
+  \subsection{Definitions}
+
+A \textit{biconnected graph} is a connected and "nonseparable" graph, meaning that if any one vertex were to be removed, the graph will remain connected. Therefore a biconnected graph has no articulation vertices.
+
+~\\
+A \textit{biconnected component} (also known as a \textit{block} or \textit{2-connected component}) is a maximal biconnected subgraph. Any connected graph decomposes into a tree of biconnected components called the \textit{block-cut tree} of the graph. The blocks are attached to each other at shared vertices called \textit{cut vertices} or \textit{articulation points}.
+
+~\\
+The \textit{block graph} of a given graph $G$ is the intersection graph of its blocks. Thus, it has one vertex for each block of $G$, and an edge between two vertices whenever the corresponding two blocks share a vertex.
+
+~\\
+A \textit{cutpoint}, \textit{cut vertex}, or \textit{articulation point} of a graph $G$ is a vertex that is shared by two or more blocks. The structure of the blocks and cutpoints of a connected graph can be described by a tree called the \textit{block-cut tree} or \textit{BC-tree}. This tree has a vertex for each block and for each articulation point of the given graph.
+
   \subsection{Algorithms}
+
+    \subsubsection{Biconnected Components}
+
+\vspace{0.5cm}
+\IncMargin{2em}
+\begin{algorithm}[H]
+\SetKwInput{Input}{Input}
+\SetKwInput{Output}{Output}
+\SetKwFunction{ArticulationPoints}{ArticulationPoints}
+\SetKwFunction{min}{min}
+\SetKwFunction{top}{top}
+\SetKwFunction{pop}{pop}
+\SetKwFunction{push}{push}
+\SetKwFunction{size}{size}
+\caption{ArticulationPoints}
+\vspace{0.1cm}
+\Indm
+\Input{Root node $root$, Depth of $root$ $d$}
+\Output{List of articulation points $L_A$, List of biconnected groups $L_G$}
+\Indp
+\vspace{0.1cm}
+$visited$[$root$] $\gets$ TRUE\\
+$depth$[$root$] $\gets d$\\
+$low$[$root$] $\gets d$\\
+$children \gets 0$\\
+$articulation \gets$ FALSE\\
+$S$.\push{root}\\
+\ForEach{neighbour $n$ of $root$}{
+  \uIf{\textbf{not} $visited$[$n$]}{
+    $parent$[$n$] $\gets root$\\
+    \ArticulationPoints{$n$, $d + 1$}\\
+    $children \gets children + 1$\\
+    \tcp{Build the biconnected component under current root}
+    \If{$low$[$n$] $\ge depth$[$root$]}{
+      $articulation \gets$ TRUE\\
+      $G \gets \{root\}$\\
+      \While{last element of $G \not= n$}{
+        append $S$.\top{} to $G$\\
+        $S$.\pop{}
+      }
+      append $G$ to $L_G$\\
+    }
+    $low$[$root$] $\gets$ \min{$low$[$root$], $low$[$n$]}\\
+  }\ElseIf{$n \not= parent$[$root$]}{
+    $low$[$root$] $\gets$ \min{$low$[$root$], $depth$[$n$]}
+  }
+}
+\vspace{0.15cm}
+\tcp{Append current node to list of articulation points}
+\tcp{Distinguish if current node is root of DFS}
+  \If{($parent$[$root$] == NULL \textbf{and} $children > 1$) \textbf{or} ($parent$[$root$] $\not=$ NULL \textbf{and} articulation)}{
+  append $root$ to $L_A$\\
+}
+\end{algorithm}
+\DecMargin{2em}
+\vspace{0.5cm}
+
+If all the biconnected components are isolated, building the block-cut tree is done by building a mapping $f$ between vertices in the original graph to vertices in the block-cut tree.
+
+~\\
+First, create one vertex $v_T$ in the block-cut tree per articulation vertex $v_O$ in the original graph, and map $v_O$ to $v_T$, $f(v_O) = v_T$. The second step is to iterate over the biconnected groups. For each group $G$, create a vertex $v_G$ and iterate over the vertices in $G$. If the current vertex $v$ is an articulation vertex, then add an edge between $v_G$ and $f(v)$. Otherwise, map $v$ to $v_G$, $f(v) = v_G$.
 
     \subsubsection{Strongly Connected Components}
 
