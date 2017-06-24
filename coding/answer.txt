@@ -762,34 +762,34 @@ bool graphs::graph::two_coloring() {
 
 // Prim
 vector<graphs::edge*> graphs::graph::prim() {
-  set<edge*> esearch;
+  vector<edge*> elist;
   set<vertex*> visited;
-  vector<edge*> cover;
+  auto cmp = [](edge* e1, edge* e2) { return e1->cost > e2->cost; };
+  priority_queue<edge*, vector<edge*>, decltype(cmp)> vqueue(cmp);
   vertex* v0 = vertices[rand() % vertices.size()];   // start with rand vertex
   visited.insert(v0);
-  for (vertex* n : v0->neighs) { esearch.insert(edgebet(v0, n)); }
-  while (!esearch.empty()) {
-    auto eminit = min_element(esearch.begin(), esearch.end(),
-        [](edge* e1, edge* e2) {
-      return e1->cost < e2->cost;
-    });
-    edge* emin = *eminit;
-    esearch.erase(eminit);
-    vertex* v1 = emin->v1;
-    vertex* v2 = emin->v2;
-    if (visited.find(v1) == visited.end() ||
-        visited.find(v2) == visited.end()) {
-      cover.push_back(emin);
+  for (auto* n : v0->neighs) { vqueue.push(edgebet(n, v0)); }
+  while (!vqueue.empty()) {
+    edge* best = vqueue.top();
+    vqueue.pop();
+    auto* v1 = best->v1;
+    auto* v2 = best->v2;
+    if (visited.find(v1) == visited.end() || visited.find(v2) == visited.end()) {
+      elist.push_back(best);
       if (visited.find(v1) == visited.end()) {
         visited.insert(v1);
-        for (vertex* n : v1->neighs) { esearch.insert(edgebet(v1, n)); }
+        for (auto* n : v1->neighs) {
+          vqueue.push(edgebet(n, v1));
+        }
       } else {
         visited.insert(v2);
-        for (vertex* n : v2->neighs) { esearch.insert(edgebet(v2, n)); }
+        for (auto* n : v2->neighs) {
+          vqueue.push(edgebet(n, v2));
+        }
       }
     }
   }
-  return cover;
+  return elist;
 }
 
 // DFS
@@ -858,55 +858,40 @@ vector<vector<int>> graphs::graph::floyd_warshall() {
 
 // Biconnected Components
 // Returns the components by value, the articulation points by reference
-vector<vector<const graphs::vertex*>>
-graphs::graph::biconnected_components(const vertex* start,
-                                      set<int>& apoints) const {
-  vector<vector<const vertex*>> answer;
-  map<const vertex*, const vertex*> parents;
-  map<const vertex*, int> depth;
-  map<const vertex*, int> low;    // highest depth reachable if parent is cut
-  set<const vertex*> visited;
-  stack<const vertex*> s;         // stack of all points visited
+vector<vector<graphs::vertex*>>
+graphs::graph::biconnected_components(vertex* start, set<int>& apoints) const {
+  vector<vector<vertex*>> groups;
+  map<vertex*, int> num, low;
+  map<vertex*, vertex*> parent;
+  stack<vertex*> s;                  // stack is used to build groups
+  int d = 1, children = 0;           // children is used to classify 'start'
 
-  // Depth-First Search with additional information
-  function<void(const vertex*, int)> dfs = [&](const vertex* v, int d) {
-    depth[v] = d;
-    low[v] = d;
-    visited.insert(v);
+  function<void(vertex*)> dfs = [&](vertex* v) {
+    low[v] = num[v] = d++;
     s.push(v);
-    int children = 0;      // Root of DFS is articulation only if children > 1
-    bool articulation = false;
     for (auto* n : v->neighs) {
-      if (visited.find(n) == visited.end()) {
-        parents[n] = v;
-        dfs(n, d+1);
-        children++;
-        if (low[n] >= depth[v]) {
-          articulation = true;
-          // Add the biconnected group to the list of components
-          vector<const vertex*> group;
-          group.push_back(v);
-          while (group.back() != n) {
-            group.push_back(s.top());
-            s.pop();
-          }
-          answer.push_back(group);
+      if (num[n] == 0) {
+        parent[n] = v;
+        dfs(n);
+        if (parent[v] == nullptr) children++;
+        if (low[n] >= num[v]) {
+          apoints.insert(v->value);
+          vector<vertex*> g({v});
+          while (g.push_back(s.top()), s.pop(), g.back() != n);
+          groups.push_back(move(g));
         }
         low[v] = min(low[v], low[n]);
-      } else if (n != parents[v]) {
-        low[v] = min(low[v], depth[n]);
+      } else if (n != parent[v]) {
+        low[v] = min(low[v], num[n]);
       }
-    }
-    if ((parents[v] != nullptr && articulation) ||
-        (parents[v] == nullptr && children > 1)) {
-      // Add the vertex to the list of articulation points
-      apoints.insert(v->value);
     }
   };
 
-  parents[start] = nullptr;
-  dfs(start, 0);
-  return answer;
+  parent[start] = nullptr;
+  dfs(start);
+  if (children > 1) apoints.insert(start->value);
+  else apoints.erase(start->value);
+  return groups;
 }
 
 

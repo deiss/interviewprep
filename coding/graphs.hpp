@@ -37,8 +37,8 @@ class graph {
   vector<int> dfs(vertex*);
   vector<int> bfs(vertex*);
   vector<vector<int>> floyd_warshall();
-  vector<vector<const graphs::vertex*>> biconnected_components(
-      const vertex*, set<int>&) const;
+  vector<vector<graphs::vertex*>> biconnected_components(
+      vertex*, set<int>&) const;
 
   static graph build_graph(bool directed, bool add_cycle = false,
                            bool remove_2_6 = false) {

@@ -449,6 +449,8 @@ A \textit{cutpoint}, \textit{cut vertex}, or \textit{articulation point} of a gr
 \begin{algorithm}[H]
 \SetKwInput{Input}{Input}
 \SetKwInput{Output}{Output}
+\SetKwInput{Preconditions}{Preconditions}
+\SetKwInput{PostOperations}{Post-Operations}
 \SetKwFunction{ArticulationPoints}{ArticulationPoints}
 \SetKwFunction{min}{min}
 \SetKwFunction{top}{top}
@@ -458,42 +460,39 @@ A \textit{cutpoint}, \textit{cut vertex}, or \textit{articulation point} of a gr
 \caption{ArticulationPoints}
 \vspace{0.1cm}
 \Indm
-\Input{Root node $root$, Depth of $root$ $d$}
+\Preconditions{$num$, $children$: initialized to 0, $count$: initialized to 1}
+\Input{Current DFS vertex $v$ ($dfs\_root$ is the root of the DFS search)}
 \Output{List of articulation points $L_A$, List of biconnected groups $L_G$}
+\PostOperations{$dfs\_root \in L_A \Leftrightarrow children > 1$}
 \Indp
 \vspace{0.1cm}
-$visited$[$root$] $\gets$ TRUE\\
-$depth$[$root$] $\gets d$\\
-$low$[$root$] $\gets d$\\
-$children \gets 0$\\
-$articulation \gets$ FALSE\\
-$S$.\push{root}\\
-\ForEach{neighbour $n$ of $root$}{
-  \uIf{\textbf{not} $visited$[$n$]}{
-    $parent$[$n$] $\gets root$\\
-    \ArticulationPoints{$n$, $d + 1$}\\
-    $children \gets children + 1$\\
-    \tcp{Build the biconnected component under current root}
-    \If{$low$[$n$] $\ge depth$[$root$]}{
-      $articulation \gets$ TRUE\\
-      $G \gets \{root\}$\\
+$low$[$v$], $num$[$v$] $\gets count$\\
+$count \gets count + 1$\\
+$S$.\push{v}\\
+\ForEach{neighbour $n$ of $v$}{
+  \tcp{$num$ also serves as the 'visited' set}
+  \uIf{$num$[$n$] == 0}{
+    $parent$[$n$] $\gets v$\\
+    \ArticulationPoints{$n$}\\
+    \If{$parent$[$v$] == NULL}{
+      $children \gets children + 1$
+    }
+    \tcp{build the biconnected component under current vertex}
+    \If{$low$[$n$] $\ge num$[$v$]}{
+      append $v$ to $L_A$\\
+      $G \gets \{v\}$\\
       \While{last element of $G \not= n$}{
         append $S$.\top{} to $G$\\
         $S$.\pop{}
       }
       append $G$ to $L_G$\\
     }
-    $low$[$root$] $\gets$ \min{$low$[$root$], $low$[$n$]}\\
-  }\ElseIf{$n \not= parent$[$root$]}{
-    $low$[$root$] $\gets$ \min{$low$[$root$], $depth$[$n$]}
+    $low$[$v$] $\gets$ \min{$low$[$v$], $low$[$n$]}\\
+  }\ElseIf{$n \not= parent$[$v$]}{
+    $low$[$v$] $\gets$ \min{$low$[$v$], $num$[$n$]}
   }
 }
 \vspace{0.15cm}
-\tcp{Append current node to list of articulation points}
-\tcp{Distinguish if current node is root of DFS}
-  \If{($parent$[$root$] == NULL \textbf{and} $children > 1$) \textbf{or} ($parent$[$root$] $\not=$ NULL \textbf{and} articulation)}{
-  append $root$ to $L_A$\\
-}
 \end{algorithm}
 \DecMargin{2em}
 \vspace{0.5cm}
