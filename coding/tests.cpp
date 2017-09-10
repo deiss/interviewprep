@@ -81,6 +81,7 @@ void run_tests() {
     cout << endl << "[TEST: Quick sort]" << endl;
     if (!test_in_place_sort(quick_sort(), true) || 
         !test_in_place_sort(quick_sort(), false)) wrong++;
+    cout << endl;
   } catch(const not_implemented_exc& e) {
     total--;
   }
@@ -103,6 +104,7 @@ void run_tests() {
     cout << endl << "[TEST: Counting sort]" << endl;
     if (!test_outta_place_sort(counting_sort(), true) || 
         !test_outta_place_sort(counting_sort(), false)) wrong++;
+    cout << endl;
   } catch(const not_implemented_exc& e) {
     total--;
   }
@@ -124,6 +126,7 @@ void run_tests() {
     cout << endl << "[TEST: Merge sort]" << endl;
     if (!test_outta_place_sort(merge_sort(), true) || 
         !test_outta_place_sort(merge_sort(), false)) wrong++;
+    cout << endl;
   } catch(const not_implemented_exc& e) {
     total--;
   }
