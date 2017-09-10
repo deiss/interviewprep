@@ -133,6 +133,7 @@ void datastructures::bst::walk(node* start, vector<int>& sorted) const {
   throw not_implemented_exc();
 }
 
+// Variables: next.
 void datastructures::ll_cycle(node* start, int* mu, int* lambda) {
   throw not_implemented_exc();
 }
@@ -168,6 +169,7 @@ int nbrs::kmp(const string& pattern, const string& text) {
   throw not_implemented_exc();
 }
 
+// first: x, second: y
 double nbrs::closest_points(const vector<pair<double, double>>& points) {
   throw not_implemented_exc();
 }

@@ -100,7 +100,6 @@ vector<int> sorts::counting_sort::sort(
 // Radix Sort
 vector<int> sorts::radix_sort::sort(
     const vector<int>& a, bool increasing) const {
-  //throw not_implemented_exc();
   if (a.size() <= 1) {
     return a;
   }
@@ -355,15 +354,17 @@ void datastructures::bst::del(node* start) {
   } else if (start->right == nullptr) {
     transplant(start, start->left);
   } else {
-    node* s = vmin(start->right);
-    if (s != start->right) {
-      transplant(s, s->right);
-      s->right = start->right;
-      start->right->parent = s;
+    // Replace with a node in the left because left <= key < right.
+    // If using left < key <= right, then look for successor, in the right tree.
+    node* pred = vmax(start->left);
+    if (start->left != pred) {
+      transplant(pred, pred->left);
+      pred->left = start->left;
+      start->left->parent = pred;
     }
-    transplant(start, s);
-    s->left = start->left;
-    start->left->parent = s;
+    transplant(start, pred);
+    pred->right = start->right;
+    start->right->parent = pred;
   }
 }
 
@@ -381,7 +382,6 @@ void datastructures::bst::walk(node* start, vector<int>& sorted) const {
 
 // Floyd Linked List Cycle Detection
 void datastructures::ll_cycle(node* start, int* mu, int* lambda) {
-  //throw not_implemented_exc();
   *mu = 0;
   *lambda = 0;
   if (start == nullptr || start->next == nullptr ||
@@ -598,6 +598,7 @@ int nbrs::kmp(const string& pattern, const string& text) {
     if (j == pattern.size()) {
       matches++;
       j = lps[j-1];
+      // match is at index (i-j)
     } else if (i < text.size() && pattern[j] != text[i]) {
       if (j != 0) {
         j = lps[j-1];
