@@ -180,25 +180,28 @@ bool nbrs::is_prime(long long int nb) {
 
 // ****************************************************************************
 // ** Graphs **
-// Variables: vertices, edges, v1, v2, cost, v, neighs
-
+// Variables: vertices, edges, v1, v2, cost, value, neighs
 vector<graphs::vertex*> graphs::graph::topo_sort(bool* has_cycle) {
   throw not_implemented_exc();
 }
 
+// Variables: vertices, edges, v1, v2, cost, value, neighs
 bool graphs::graph::two_coloring() {
   throw not_implemented_exc();
 }
 
-// Functions: edgebet(v1, v2) returns egde that links v1 v2
+// Functions: edgebet(v1, v2) returns edge that links v1 and v2.
+// Variables: vertices, edges, v1, v2, cost, value, neighs
 vector<graphs::edge*> graphs::graph::prim() {
   throw not_implemented_exc();
 }
 
+// Variables: vertices, edges, v1, v2, cost, value, neighs
 vector<int> graphs::graph::dfs(vertex* start) {
   throw not_implemented_exc();
 }
 
+// Variables: vertices, edges, v1, v2, cost, value, neighs
 vector<int> graphs::graph::bfs(vertex* start) {
   throw not_implemented_exc();
 }

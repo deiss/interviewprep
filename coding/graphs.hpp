@@ -50,13 +50,15 @@ class graph {
     vertex* v7 = g.add_vertex(7); vertex* v8 = g.add_vertex(8);
     vertex* v9 = g.add_vertex(9); vertex* v10 = g.add_vertex(10);
 
-    g.connect(v1, v2, 4, directed); g.connect(v9, v7, 2, directed);
+    g.connect(v1, v2, 4, directed);
+    if (!remove_2_6) g.connect(v2, v6, 2, directed);
     g.connect(v2, v5, 2, directed); g.connect(v2, v4, 1, directed);
     g.connect(v2, v3, 9, directed); g.connect(v3, v7, 2, directed);
     g.connect(v5, v7, 2, directed); g.connect(v6, v9, 3, directed);
     g.connect(v6, v8, 7, directed); g.connect(v8, v10, 2, directed);
     g.connect(v8, v7, 2, directed); g.connect(v9, v10, 2, directed);
-    if (!remove_2_6) g.connect(v2, v6, 2, directed);
+    g.connect(v9, v7, 2, directed);
+    
 
     if (add_cycle) {
       g.connect(v10, v8, 7, directed);

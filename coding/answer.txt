@@ -775,7 +775,8 @@ vector<graphs::edge*> graphs::graph::prim() {
     vqueue.pop();
     auto* v1 = best->v1;
     auto* v2 = best->v2;
-    if (visited.find(v1) == visited.end() || visited.find(v2) == visited.end()) {
+    if (visited.find(v1) == visited.end() ||
+        visited.find(v2) == visited.end()) {
       elist.push_back(best);
       if (visited.find(v1) == visited.end()) {
         visited.insert(v1);
