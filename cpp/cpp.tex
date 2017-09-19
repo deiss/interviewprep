@@ -685,6 +685,36 @@ This keyword informs the compiler that the value of the variable it is applied t
 	
 \section{Advanced}
 
+  \subsection{Rvalue References}
+
+Rvalue references solve at least two problems:
+\begin{itemize}
+  \item Implementing move semantics
+  \item Perfect forwarding
+\end{itemize}
+
+\texttt{lvalue} is an expression \texttt{e} that may appear on the left or on the right hand side of an assignment, whereas an \texttt{rvalue} is an expression that can only appear on the right hand side of an assignment.
+
+~\\
+If \texttt{X} is any type, then \texttt{X\&\&} is called an \texttt{rvalue} reference to \texttt{X}. For better distinction, the ordinary reference \texttt{X\&} is now also called an \texttt{lvalue} reference.
+
+~\\
+\begin{lstlisting}[style=cpp]
+  void foo(X& x);  // lvalue reference overload
+  void foo(X&& x); // rvalue reference overload
+
+  void bar(X&&);   // no other overload
+  X i; bar(i);     // compilation error
+\end{lstlisting}
+
+~\\
+Be careful to set to \texttt{nullptr} the pointers of a \texttt{std::move}d object. Otherwise, when destroyed, this object will also destroyed the moved object:
+\begin{lstlisting}[style=cpp]
+  std::vector<int> a;
+  std::vector<int> b = std::move(a);
+  // the operator for copy assignment by rvalue sets a.data to nullptr
+\end{lstlisting}
+
   \subsection*{Type Conversion}
 
 \begin{lstlisting}[style=cpp]

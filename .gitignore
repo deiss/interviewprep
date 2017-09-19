@@ -7,4 +7,5 @@ Session.vim
 *.toc
 *.pdf
 coding/main
+**/.DS_Store
 
