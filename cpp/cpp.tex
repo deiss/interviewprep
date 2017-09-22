@@ -396,6 +396,9 @@ When the \texttt{call} instruction is executed, the contents of the \texttt{EIP}
 ~\\
 Figure 1 shows the contents of the stack after the \texttt{call} instruction. The red line in Figure 1 and in subsequent figures indicates the top of the stack prior to the instructions that initiated the function \texttt{call} process. We will see that after the entire function \texttt{call} has finished, the top of the stack will be restored to this position.
 
+~\\
+Back when dinosaurs roamed the earth and computers had 8kB of memory if you were lucky, though, it was an important space optimization. You put the bottom of the stack at the very top of memory, growing down, and you put the program and its data at the very bottom, with the malloc area growing up. That way, the only limit on the size of the stack was the size of the program + heap, and vice versa. If the stack instead started at 4kB (for instance) and grew up, the heap could never get bigger than 4kB (minus the size of the program) even if the program only needed a few hundred bytes of stack.
+
 \begin{verbatim}
 ------------------------ Top of the stack (low addresses) ------------------
 
