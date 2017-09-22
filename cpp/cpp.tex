@@ -453,6 +453,28 @@ The body of the function \texttt{foo} can now be executed. This might involve pu
 ~\\
 Execution of the function \texttt{foo} might also involve other function calls and even recursive calls to \texttt{foo}. However, as long as the \texttt{EBP} register is restored upon return from these calls, references to the arguments, local variables and temporary storage can continue to be made as offsets from \texttt{EBP}.
 
+  \subsubsection{Buffer Overflow}
+
+In the classic times of buffer overflows, the attackers used the easy path: overflow of a buffer with attacker-chosen data; the data itself contains some code that the attacker would like to see executed (e.g. code which launches a shell); the overflow is used to overwrite the return address so that it points precisely to that data in the buffer; when the function returns, it follows that altered return address and jumps to the attacker's code.
+
+~\\
+A first protection measure is to mark the stack, and possibly most of the rest of the RAM, as non-executable. This is called Data Execution Prevention. It is about preventing the CPU from interpreting the data bytes (provided by the attacker) as code which could be executed. The hardware can make this distinction (on old 32-bit x86 CPU, it was not completely easy to do, but still possible).
+
+~\\
+In reaction, attackers began to use code which is already there in RAM, instead of inserting their own code chunks, e.g. by jumping into some function in the standard library (the standard library has many functions, some of which being quite convenient for the attacker). The standard library contains, by definition, code, so it is marked "executable" and DEP cannot do anything against that.
+
+~\\
+In reaction, defenders have devised Address Space Layout Randomization: this is what \texttt{va\_randomize\_space} activates. This shuffles around dynamically-loaded libraries in RAM, so that the attacker cannot predict where in RAM the standard library is -- if he cannot predict the location of his target code, he will have a hard time jumping to it.
+
+~\\
+In reaction, attackers have began to target the main executable itself, or the dynamic linker. Both are at a fixed position in the address space. It so happens that most code chunks can be used by the attacker to do his nefarious schemes ("Return-Oriented Programming" has been coined for that). We are still waiting for the next step in that attacker-defender dance.
+
+~\\
+Canaries try to defeat the classical exploits of buffer overflows by preventing the use of an altered return address. That's what the stack-protector option of GCC does (it does a few other things, but that's its main job). A special randomized value (the "canary") is written in the stack just before the return address slot; when the function returns, it first checks that the special value is still there. Presumably, if an overflow had reached the return address slow, it would also have written over the canary, modifying it; the code will see that, and abort, killing the application instead of jumping madly through the address space.
+
+~\\
+The canary makes any good only if the sole attacker's target is the return address of the current function; it also assumes that the overflow is not an underflow, and that it consists in a continuous sequence of bytes, and that the attacker "does not get lucky".
+
 \section{Threads}
 
   \subsection{Definitions}
