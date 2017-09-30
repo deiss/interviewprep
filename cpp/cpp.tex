@@ -309,6 +309,18 @@ An interface is a class with only pure virtual methods:
 \end{lstlisting}
 
 \section{Memory}
+
+  \subsubsection*{Endianness}
+
+In big-endian format, whenever addressing memory or sending/storing words bytewise, the most significant byte -- the byte containing the most significant bit -- is stored first (has the lowest address) or sent first, then the following bytes are stored or sent in decreasing significance order, with the least significant byte -- the one containing the least significant bit -- stored last (having the highest address) or sent last. Little-endian format reverses this order.
+
+\begin{lstlisting}[style=cpp]
+  int is_little_endian() {
+    int x = 1;
+    char *y = (char*)&x;
+    printf("%c\n", *y+48);  // 48 is ASCII for 0
+  }
+\end{lstlisting}
 	
 	\subsection*{Dynamic Allocation of a Bidimensional Array}
 	
