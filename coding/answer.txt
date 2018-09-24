@@ -55,9 +55,9 @@ void sorts::quick_sort::sort(vector<int>& a, bool increasing) const {
 
 // Heap Sort
 void sorts::heap_sort::sort(vector<int>& a, bool increasing) const {
-  if (a.size() <= 1) {
-    return;
-  }
+  // If a is empty, return. Otherwise, 0 - 1 is converted to an unsigned
+  // value in the for loop condition, which leads to segfault.
+  if (!a.size()) return;
   auto it = a.end();
   for (int i = 0; i < a.size() - 1; ++i) {
     make_heap(a.begin(), it--, [increasing](int l, int r) {
