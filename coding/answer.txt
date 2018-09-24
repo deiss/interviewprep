@@ -18,15 +18,12 @@ void sorts::selection_sort::sort(vector<int>& a, bool increasing) const {
 
 // Insertion Sort
 void sorts::insertion_sort::sort(vector<int>& a, bool increasing) const {
-  if (a.size() <= 1) {
-    return;
-  }
   for (int i = 1; i < a.size(); ++i) {
     int j = i;
     int v = a[i];
     while (j > 0 && (increasing ? a[j-1] > v : a[j-1] < v)) {
       a[j] = a[j-1];
-      j--;
+      --j;
     }
     a[j] = v;
   }
