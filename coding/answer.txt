@@ -86,7 +86,8 @@ vector<int> sorts::counting_sort::sort(
       c[i-1] += c[i];
     }
   }
-  for (int i = 0; i < a.size(); ++i) {
+  // Traverse in reverse order. Otherwise, stable elements will be misplaced.
+  for (int i = a.size() - 1; i >= 0; --i) {
     s[c[a[i]] - 1] = a[i];
     --c[a[i]];
   }
@@ -96,20 +97,17 @@ vector<int> sorts::counting_sort::sort(
 // Radix Sort
 vector<int> sorts::radix_sort::sort(
     const vector<int>& a, bool increasing) const {
-  if (a.size() <= 1) {
-    return a;
-  }
+  // If a is empty, return. Otherwise, there is no min/max element in the array.
+  if (a.size() <= 1) return a;
   auto stable = [increasing](vector<int>& a, int digit) {
-    if (a.size() <= 1) {
-      return a;
-    }
-    auto dig = [&digit](int nb) -> int {
+    // No need to check the size here since the check is done before.
+    auto dig = [&digit](int nb) {
       return nb % (int)pow(10, digit) / (int)pow(10, digit - 1);
     };
     vector<int> c(10);
     vector<int> s(a.size());
     for (int i = 0; i < a.size(); ++i) {
-      c[dig(a[i])]++;
+      ++c[dig(a[i])];
     }
     if (increasing) {
       for (int i = 1; i < c.size(); ++i) {
@@ -117,12 +115,12 @@ vector<int> sorts::radix_sort::sort(
       }
     } else {
       for (int i = c.size() - 1; i >= 1; --i) {
-        c[i - 1] += c[i];
+        c[i-1] += c[i];
       }
     }
     for (int i = a.size() - 1; i >= 0; --i) {
       s[c[dig(a[i])] - 1] = a[i];
-      c[dig(a[i])]--;
+      --c[dig(a[i])];
     }
     return s;
   };
