@@ -23,8 +23,8 @@ void sorts::insertion_sort::sort(vector<int>& a, bool increasing) const {
   for (int i = 1; i < a.size(); ++i) {
     int j = i;
     int v = a[i];
-    while (j > 0 && (increasing ? a[j-1] > v : a[j-1] < v)) {
-      a[j] = a[j-1];
+    while (j > 0 && (increasing ? a[j - 1] > v : a[j - 1] < v)) {
+      a[j] = a[j - 1];
       --j;
     }
     a[j] = v;
@@ -79,14 +79,14 @@ vector<int> sorts::counting_sort::sort(
   }
   if (increasing) {
     for (int i = 1; i < c.size(); ++i) {
-      c[i] += c[i-1];
+      c[i] += c[i - 1];
     }
   } else {
     for (int i = c.size() - 1; i >= 1; --i) {
-      c[i-1] += c[i];
+      c[i - 1] += c[i];
     }
   }
-  // Traverse in reverse order. Otherwise, stable elements will be misplaced.
+  // Traverse in reverse order. Otherwise, sort will not be stable.
   for (int i = a.size() - 1; i >= 0; --i) {
     s[c[a[i]] - 1] = a[i];
     --c[a[i]];
@@ -111,13 +111,14 @@ vector<int> sorts::radix_sort::sort(
     }
     if (increasing) {
       for (int i = 1; i < c.size(); ++i) {
-        c[i] += c[i-1];
+        c[i] += c[i - 1];
       }
     } else {
       for (int i = c.size() - 1; i >= 1; --i) {
-        c[i-1] += c[i];
+        c[i - 1] += c[i];
       }
     }
+    // Traverse in reverse order. Otherwise, sort will not be stable.
     for (int i = a.size() - 1; i >= 0; --i) {
       s[c[dig(a[i])] - 1] = a[i];
       --c[dig(a[i])];
