@@ -4,9 +4,7 @@
 
 // Selection Sort
 void sorts::selection_sort::sort(vector<int>& a, bool increasing) const {
-  if (a.size() <= 1) {
-    return;
-  }
+  if (!a.size()) return;  // If a is empty, avoids segfault.
   for (int i = 0; i < a.size() - 1; ++i) {
     int imin = i;
     for (int j = i + 1; j < a.size(); ++j) {
