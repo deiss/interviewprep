@@ -34,6 +34,13 @@ void sorts::insertion_sort::sort(vector<int>& a, bool increasing) const {
 // Quick Sort
 void sorts::quick_sort::sort(vector<int>& a, bool increasing) const {
   auto partition = [&a, increasing](int b, int e) {
+    // Choose a random pivot in the array.
+    std::default_random_engine generator;
+    std::uniform_int_distribution<int> distribution(b, e);
+    int ipivot = distribution(generator);
+    swap(a[e], a[ipivot]);
+
+    // Start the algorithm.
     int ip = b;
     int vp = a[e];
     for (int i = b; i <= e; ++i) {
