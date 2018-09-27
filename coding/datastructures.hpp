@@ -4,6 +4,7 @@
 #include "sorts.hpp"
 #include "util.hpp"
 
+#include <algorithm>
 #include <iostream>
 #include <vector>
 

@@ -1,6 +1,7 @@
 #include "tests.hpp"
 
 #include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
@@ -11,4 +12,3 @@ int main(int argc, char** argv) {
   nbrs::run_tests();
   graphs::run_tests();
 }
-
