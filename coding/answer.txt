@@ -145,15 +145,15 @@ vector<int> sorts::radix_sort::sort(
 // Merge Sort
 vector<int> sorts::merge_sort::sort(
     const vector<int>& a, bool increasing) const {
-  if (a.size() <= 1) {
-    return a;
-  }
-  auto lmerge = [increasing](vector<int>& l, vector<int>& r) {
+  // If a is empty, return. Otherwise, the base case fails.
+  if (a.size() <= 1) return a;
+  auto lmerge = [increasing](const vector<int>& l, const vector<int>& r) {
     int il = 0, ir = 0;
     vector<int> m(l.size() + r.size());
     for (int i = 0; i < l.size() + r.size(); ++i) {
-      if (il == l.size() ||
-          (ir < r.size() && (increasing ? l[il] > r[ir] : l[il] < r[ir]))) {
+      if (il == l.size() || (ir < r.size() && (increasing
+                                                   ? l[il] > r[ir]
+                                                   : l[il] < r[ir]))) {
         m[i] = r[ir++];
       } else {
         m[i] = l[il++];
@@ -163,15 +163,13 @@ vector<int> sorts::merge_sort::sort(
   };
   function<vector<int>(int, int)> local = [&a, &lmerge, &local](int b, int e) {
     if (b == e) {
-      vector<int> m;
-      m.push_back(a[b]);
-      return m;
+      return vector<int>({a[b]});
     } else {
-      int m = (b + e) / 2;
+      int m = b + (e - b) / 2;  // Avoids integer overflow.
       auto l = local(b, m);
       auto r = local(m + 1, e);
       return lmerge(l, r);
-    } 
+    }
   };
   return local(0, a.size() - 1);
 }
