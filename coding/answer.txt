@@ -65,12 +65,14 @@ void sorts::heap_sort::sort(vector<int>& a, bool increasing) const {
   // If a is empty, return. Otherwise, 0 - 1 is converted to an unsigned
   // value in the for loop condition, which leads to segfault.
   if (a.size() <= 1) return;
+  auto cmp = [increasing](int l, int r) {
+    return increasing ? l < r : r < l;
+  };
   auto it = a.end();
+  make_heap(a.begin(), it, cmp);
   for (int i = 0; i < a.size() - 1; ++i) {
-    make_heap(a.begin(), it--, [increasing](int l, int r) {
-      return increasing ? l < r : r < l;
-    });
-    swap(a[0], *it);
+    // Swaps top of the heap with end of the range.
+    pop_heap(a.begin(), it--, cmp);
   }
 }
 
