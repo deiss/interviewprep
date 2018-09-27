@@ -192,14 +192,12 @@ int datastructures::pqueue::parent(int node) const {
 
 void datastructures::pqueue::heapify(int node, int size) {
   int extreme = node;
-  if (left(node) < size &&
-      (maxqueue ? a[left(node)] > a[extreme]
-                : a[left(node)] < a[extreme])) {
+  if (left(node) < size && (maxqueue ? a[left(node)] > a[extreme]
+                                     : a[left(node)] < a[extreme])) {
     extreme = left(node);
   }
-  if (right(node) < size &&
-      (maxqueue ? a[right(node)] > a[extreme]
-                : a[right(node)] < a[extreme])) {
+  if (right(node) < size && (maxqueue ? a[right(node)] > a[extreme]
+                                      : a[right(node)] < a[extreme])) {
     extreme = right(node);
   }
   if (extreme != node) {
@@ -209,7 +207,7 @@ void datastructures::pqueue::heapify(int node, int size) {
 }
 
 void datastructures::pqueue::build() {
-  for (int i = a.size()/2 - 1; i >= 0; --i) {
+  for (int i = a.size() / 2 - 1; i >= 0; --i) {
     heapify(i);
   }
 }
@@ -219,10 +217,10 @@ void datastructures::pqueue::insert(int key) {
     a.push_back(key);
   } else {
     if (maxqueue) {
-      a.push_back(*min_element(a.begin(), a.end()) - 1);
+      a.push_back(std::numeric_limits<int>::min());
       increase_key(a.size() - 1, key);
     } else {
-      a.push_back(*max_element(a.begin(), a.end()) + 1);
+      a.push_back(std::numeric_limits<int>::max());
       decrease_key(a.size() - 1, key);
     }
   }
