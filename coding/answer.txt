@@ -213,7 +213,7 @@ void datastructures::pqueue::build() {
     heapify(i);
   }
 }
- 
+
 void datastructures::pqueue::insert(int key) {
   if (a.empty()) {
     a.push_back(key);

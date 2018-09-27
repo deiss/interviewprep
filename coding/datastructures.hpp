@@ -28,7 +28,7 @@ class pqueue {
   void increase_key(int, int);
   void decrease_key(int, int);
   void insert(int);
-  
+
   vector<int> a;
   const bool maxqueue;
 
@@ -359,4 +359,3 @@ void ll_cycle(node*, int*, int*);
 }
 
 #endif
-
