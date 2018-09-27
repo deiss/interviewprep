@@ -81,7 +81,7 @@ void datastructures::pqueue::heapify(int node, int size) {
 void datastructures::pqueue::build() {
   throw not_implemented_exc();
 }
- 
+
 void datastructures::pqueue::insert(int key) {
   throw not_implemented_exc();
 }
@@ -99,7 +99,7 @@ void datastructures::pqueue::decrease_key(int node, int new_key) {
 }
 
 
-// * Binary Search Tree * 
+// * Binary Search Tree *
 // Variables: root, key, left, right, parent
 datastructures::bst::node* datastructures::bst::search(int key) const {
   throw not_implemented_exc();
@@ -216,4 +216,3 @@ vector<vector<graphs::vertex*>>
 graphs::graph::biconnected_components(vertex* start, set<int>& apoints) const {
   throw not_implemented_exc();
 }
-
