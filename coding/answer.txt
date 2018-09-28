@@ -208,7 +208,7 @@ void datastructures::pqueue::heapify(int node, int size) {
 
 void datastructures::pqueue::build() {
   for (int i = a.size() / 2 - 1; i >= 0; --i) {
-    heapify(i);
+    heapify(i, a.size());
   }
 }
 
@@ -228,9 +228,9 @@ void datastructures::pqueue::insert(int key) {
 
 int datastructures::pqueue::extract() {
   int ans = a[0];
-  a[0] = a[a.size() - 1];
+  a[0] = a.back();
   a.pop_back();
-  heapify(0);
+  heapify(0, a.size());
   return ans;
 }
 
@@ -242,7 +242,7 @@ void datastructures::pqueue::increase_key(int node, int new_key) {
       node = parent(node);
     }
   } else {
-    heapify(node);
+    heapify(node, a.size());
   }
 }
 
@@ -254,7 +254,7 @@ void datastructures::pqueue::decrease_key(int node, int new_key) {
       node = parent(node);
     }
   } else {
-    heapify(node);
+    heapify(node, a.size());
   }
 }
 
@@ -269,7 +269,7 @@ datastructures::bst::node* datastructures::bst::search(int key) const {
       n = n->left;
     } else {
       n = n->right;
-    } 
+    }
   }
   return n;
 }
@@ -895,5 +895,3 @@ graphs::graph::biconnected_components(vertex* start, set<int>& apoints) const {
   else apoints.erase(start->value);
   return groups;
 }
-
-
