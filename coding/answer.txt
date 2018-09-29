@@ -265,33 +265,24 @@ void datastructures::pqueue::decrease_key(int node, int new_key) {
 datastructures::bst::node* datastructures::bst::search(int key) const {
   node* n = root;
   while (n != nullptr && n->key != key) {
-    if (key <= n->key) {
-      n = n->left;
-    } else {
-      n = n->right;
-    }
+    if (key <= n->key) n = n->left;
+    else n = n->right;
   }
   return n;
 }
 
 datastructures::bst::node* datastructures::bst::vmin(node* start) const {
-  while (start->left != nullptr) {
-    start = start->left;
-  }
+  while (start->left != nullptr) start = start->left;
   return start;
 }
 
 datastructures::bst::node* datastructures::bst::vmax(node* start) const {
-  while (start->right != nullptr) {
-    start = start->right;
-  }
+  while (start->right != nullptr) start = start->right;
   return start;
 }
 
 datastructures::bst::node* datastructures::bst::successor(node* start) const {
-  if (start->right != nullptr) {
-    return vmin(start->right);
-  }
+  if (start->right != nullptr) return vmin(start->right);
   node* p = start->parent;
   while (p != nullptr && p->right == start) {
     start = p;
@@ -302,9 +293,7 @@ datastructures::bst::node* datastructures::bst::successor(node* start) const {
 
 datastructures::bst::node*
 datastructures::bst::predecessor(node* start) const {
-  if (start->left != nullptr) {
-    return vmax(start->left);
-  }
+  if (start->left != nullptr) return vmax(start->left);
   node* p = start->parent;
   while (p != nullptr && p->left == start) {
     start = p;
@@ -315,24 +304,17 @@ datastructures::bst::predecessor(node* start) const {
 
 datastructures::bst::node* datastructures::bst::insert(int key) {
   node* n = new node(key);
+  if (root == nullptr) return root = n;
+
   node* p = nullptr;
   node* c = root;
   while (c != nullptr) {
     p = c;
-    if (key <= c->key) {
-      c = c->left;
-    } else {
-      c = c->right;
-    }
+    c = key <= c->key ? c->left : c->right;
   }
   n->parent = p;
-  if (p == nullptr) {
-    root = n;
-  } else if (key <= p->key) {
-    p->left = n;
-  } else {
-    p->right = n;
-  }
+  if (key <= p->key) p->left = n;
+  else p->right = n;
   return n;
 }
 

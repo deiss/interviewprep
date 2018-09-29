@@ -206,17 +206,17 @@ bool test_bst() {
     wrong++;
     cout << "FAIL" << endl;
   } else cout << "OK" << endl;
-  cout << "  2: "; 
+  cout << "  2: ";
   if (!bst::test({9, 540, 1, 29, 0, 28, 3, 57, 5, 5})) {
     wrong++;
     cout << "FAIL" << endl;
   } else cout << "OK" << endl;
-  cout << "  3: "; 
+  cout << "  3: ";
   if (!bst::test({1})) {
     wrong++;
     cout << "FAIL" << endl;
   } else cout << "OK" << endl;
-  cout << "  4: "; 
+  cout << "  4: ";
   if (!bst::test({})) {
     wrong++;
     cout << "FAIL" << endl;
@@ -278,7 +278,7 @@ void run_tests() {
   cout << "Executed " << total << " out of " << nb << " tests. ";
   cout << (total - wrong) << "/" << total << " tests pass." << endl;
 }
-  
+
 }
 
 namespace nbrs {
