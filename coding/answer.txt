@@ -348,6 +348,7 @@ void datastructures::bst::del(node* start) {
     pred->right = start->right;
     start->right->parent = pred;
   }
+  delete start;
 }
 
 void datastructures::bst::walk(node* start, vector<int>& sorted) const {
