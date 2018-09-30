@@ -363,15 +363,13 @@ void datastructures::bst::walk(node* start, vector<int>& sorted) const {
 // ****************************************************************************
 // *** LINKED LIST ***
 
-// Floyd Linked List Cycle Detection
+// Floyd Linked List Cycle Detection.
 void datastructures::ll_cycle(node* start, int* mu, int* lambda) {
-  *mu = 0;
   *lambda = 0;
   if (start == nullptr || start->next == nullptr ||
-      start->next->next == nullptr) {
-    return;
-  }
+      start->next->next == nullptr) return;
 
+  // Detect a cycle.
   node* tortoise = start->next;
   node* hare = start->next->next;
   while (tortoise != hare) {
@@ -380,20 +378,20 @@ void datastructures::ll_cycle(node* start, int* mu, int* lambda) {
     hare = hare->next->next;
   }
 
-  // Cycle start
+  // Cycle start.
   tortoise = start;
   *mu = 0;
   while (tortoise != hare) {
-    (*mu)++;
+    ++(*mu);
     tortoise = tortoise->next;
     hare = hare->next;
   }
 
-  // Cycle length
+  // Cycle length.
   *lambda = 1;
   tortoise = hare->next;
   while (tortoise != hare) {
-    (*lambda)++;
+    ++(*lambda);
     tortoise = tortoise->next;
   }
 }
