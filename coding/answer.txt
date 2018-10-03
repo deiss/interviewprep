@@ -426,9 +426,7 @@ int nbrs::selection(vector<int>& a, int i) {
   };
   function<int(int, int, int)> local =
       [&partition, &a, &local](int b, int e, int i) {
-    if (b == e) {
-      return a[b];
-    }
+    if (b == e) return a[b];
     int q = partition(b, e);
     int k = q - b + 1;
     if (k == i) {
