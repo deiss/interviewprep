@@ -1,8 +1,7 @@
-
 // ****************************************************************************
 // *** SORTS ***
 
-// Selection Sort
+// Selection Sort.
 void sorts::selection_sort::sort(vector<int>& a, bool increasing) const {
   // If a is empty, return. Otherwise, 0 - 1 is converted to an unsigned
   // value in the for loop condition, which leads to segfault.
@@ -18,7 +17,7 @@ void sorts::selection_sort::sort(vector<int>& a, bool increasing) const {
   }
 }
 
-// Insertion Sort
+// Insertion Sort.
 void sorts::insertion_sort::sort(vector<int>& a, bool increasing) const {
   for (int i = 1; i < a.size(); ++i) {
     int j = i;
@@ -31,7 +30,7 @@ void sorts::insertion_sort::sort(vector<int>& a, bool increasing) const {
   }
 }
 
-// Quick Sort
+// Quick Sort.
 void sorts::quick_sort::sort(vector<int>& a, bool increasing) const {
   auto partition = [&a, increasing](int b, int e) {
     // Choose a random pivot in the array.
@@ -60,7 +59,7 @@ void sorts::quick_sort::sort(vector<int>& a, bool increasing) const {
   local(0, a.size() - 1);
 }
 
-// Heap Sort
+// Heap Sort.
 void sorts::heap_sort::sort(vector<int>& a, bool increasing) const {
   // If a is empty, return. Otherwise, 0 - 1 is converted to an unsigned
   // value in the for loop condition, which leads to segfault.
@@ -76,7 +75,7 @@ void sorts::heap_sort::sort(vector<int>& a, bool increasing) const {
   }
 }
 
-// Counting Sort
+// Counting Sort.
 vector<int> sorts::counting_sort::sort(
     const vector<int>& a, bool increasing) const {
   // If a is empty, return. Otherwise, there is no min/max element in the array.
@@ -103,7 +102,7 @@ vector<int> sorts::counting_sort::sort(
   return s;
 }
 
-// Radix Sort
+// Radix Sort.
 vector<int> sorts::radix_sort::sort(
     const vector<int>& a, bool increasing) const {
   // If a is empty, return. Otherwise, there is no min/max element in the array.
@@ -142,7 +141,7 @@ vector<int> sorts::radix_sort::sort(
   return s;
 }
 
-// Merge Sort
+// Merge Sort.
 vector<int> sorts::merge_sort::sort(
     const vector<int>& a, bool increasing) const {
   // If a is empty, return. Otherwise, the base case fails.
@@ -400,7 +399,7 @@ void datastructures::ll_cycle(node* start, int* mu, int* lambda) {
 // ****************************************************************************
 // *** NBRS ***
 
-// GCD
+// GCD.
 int nbrs::gcd(int a, int b) {
   while (b != 0) {
     int c = a;
@@ -410,7 +409,7 @@ int nbrs::gcd(int a, int b) {
   return a;
 }
 
-// Selection
+// Selection.
 int nbrs::selection(vector<int>& a, int i) {
   auto partition = [&a](int b, int e) {
     int ip = b;
@@ -438,24 +437,24 @@ int nbrs::selection(vector<int>& a, int i) {
   return local(0, a.size() - 1, i);
 }
 
-// Subsets
+// Subsets.
 set<string> nbrs::subsets(const string& letters) {
-  set<string> ans;
-  for (int i = 0; i < pow(2, letters.size()); ++i) {
-    int c = 0;
-    string s;
-    while ((i >> c) > 0) {
-      if (((i >> c) & 1) > 0) {
-        s.push_back(letters[c]);
-      }
-      c++;
+  set<string> s;
+  for (int i = 0; i < (1 << letters.size()); ++i) {
+    int v = i;
+    int j = 0;
+    string word;
+    while(v > 0) {
+      if (v & 1) word.push_back(letters[j]);
+      ++j;
+      v >>= 1;
     }
-    ans.insert(s);
+    s.insert(word);
   }
-  return ans;
+  return s;
 }
 
-// Permutations - Iterative STL algorithm
+// Permutations - Iterative STL algorithm.
 set<string> nbrs::permutations(const string& letters) {
   set<string> perms;
   if (letters.size() <= 1) {
@@ -495,7 +494,7 @@ set<string> nbrs::permutations(const string& letters) {
   return perms;
 }
 
-// Permutations - Recursive
+// Permutations - Recursive.
 set<string> nbrs::permutations(const string& letters) {
   set<string> ans;
   function<void(const string&, const string&)> local =
@@ -514,7 +513,7 @@ set<string> nbrs::permutations(const string& letters) {
   return ans;
 }
 
-// Kadane
+// Kadane.
 int nbrs::kadane(const vector<int>& a) {
   int max_ever = 0;
   int max_here = 0;
@@ -525,7 +524,7 @@ int nbrs::kadane(const vector<int>& a) {
   return max_ever;
 }
 
-// Binary Search
+// Binary Search.
 bool nbrs::binsearch(const vector<int>& a, int key) {
   int b = 0;
   int e = a.size() - 1;
@@ -542,7 +541,7 @@ bool nbrs::binsearch(const vector<int>& a, int key) {
   return false;
 }
 
-// KMP substring matching
+// KMP substring matching.
 int nbrs::kmp(const string& pattern, const string& text) {
   // Generate the array of longest prefix that is also suffix.
   auto lps_gen = [&pattern]() {
@@ -685,7 +684,7 @@ bool nbrs::is_prime(long long int nb) {
 // ****************************************************************************
 // *** GRAPHS ***
 
-// Topological Sort
+// Topological Sort.
 vector<graphs::vertex*> graphs::graph::topo_sort(bool* has_cycle) {
   *has_cycle = false;
   set<vertex*> unmarked(vertices.begin(), vertices.end());
@@ -740,7 +739,7 @@ bool graphs::graph::two_coloring() {
   return true;
 }
 
-// Prim
+// Prim.
 vector<graphs::edge*> graphs::graph::prim() {
   vector<edge*> elist;
   set<vertex*> visited;
@@ -773,7 +772,7 @@ vector<graphs::edge*> graphs::graph::prim() {
   return elist;
 }
 
-// DFS
+// DFS.
 vector<int> graphs::graph::dfs(vertex* start) {
   vector<int> vlist;
   stack<vertex*> vsearch;
@@ -794,7 +793,7 @@ vector<int> graphs::graph::dfs(vertex* start) {
   return vlist;
 }
 
-// BFS
+// BFS.
 vector<int> graphs::graph::bfs(vertex* start) {
   vector<int> vlist;
   queue<vertex*> vsearch;
@@ -814,7 +813,7 @@ vector<int> graphs::graph::bfs(vertex* start) {
   return vlist;
 }
 
-// Floyd Warshall
+// Floyd Warshall.
 vector<vector<int>> graphs::graph::floyd_warshall() {
   vector<vector<int>> costs(
       vertices.size(),
@@ -837,8 +836,8 @@ vector<vector<int>> graphs::graph::floyd_warshall() {
   return costs;
 }
 
-// Biconnected Components
-// Returns the components by value, the articulation points by reference
+// Biconnected Components.
+// Returns the components by value, the articulation points by reference.
 vector<vector<graphs::vertex*>>
 graphs::graph::biconnected_components(vertex* start, set<int>& apoints) const {
   vector<vector<vertex*>> groups;
