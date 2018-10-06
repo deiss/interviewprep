@@ -466,17 +466,33 @@ set<string> nbrs::permutations(const string& letters) {
   auto next_p = [](string& s) {
     int i = s.size() - 2;
     while (i >= 0) {
+      // We're trying to get the next permutation in lexicographic order.
+      // As long as the characters are in decreasing order, we can't do much,
+      // so skip those, and stop when finally it's in increasing order.
       if (s[i] < s[i+1]) {
+        // We found a substring that can be changed to get the next permutation.
         int j = s.size() - 1;
+        // We want the smallest bigger permutation, so find the smallest
+        // character in the substring that's bigger than the leading character
+        // and swap these two.
         while (s[i] >= s[j]) j--;
         swap(s[i], s[j]);
+        // Now since we want the smallest next permutation. Note that swapping
+        // above left the substring sorted in decreasing order. To get the
+        // smallest substring now that the leading character is fixed, reverse
+        // the rest of the substring so that it's in increasing order, and
+        // therefore the smallest value.
         ++i;
         j = s.size() - 1;
         while (i < j) swap(s[i++], s[j--]);
+        // Return true since there was a valid next permutation.
         return true;
       }
       --i;
     }
+    // Here the whole string is sorted in decreasing order. There is no next
+    // permutation except starting another cycle. Sort in increasing order by
+    // reversing the string and return false.
     i = 0;
     int j = s.size() - 1;
     while (i < j) swap(s[i++], s[j--]);
