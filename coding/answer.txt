@@ -1,5 +1,6 @@
-// ****************************************************************************
-// *** SORTS ***
+// *****************************************************************************
+// ******************************** Sorting ************************************
+// *****************************************************************************
 
 // Selection Sort.
 void sorts::selection_sort::sort(vector<int>& a, bool increasing) const {
@@ -174,9 +175,11 @@ vector<int> sorts::merge_sort::sort(
 }
 
 
-// ****************************************************************************
-// *** PRIORITY QUEUE ***
+// *****************************************************************************
+// ***************************** Data Structures *******************************
+// *****************************************************************************
 
+// Priority Queue.
 int datastructures::pqueue::left(int node) const {
   return 2*node + 1;
 }
@@ -257,10 +260,7 @@ void datastructures::pqueue::decrease_key(int node, int new_key) {
   }
 }
 
-
-// ****************************************************************************
-// *** BST ***
-
+// Binary Search Tree.
 datastructures::bst::node* datastructures::bst::search(int key) const {
   node* n = root;
   while (n != nullptr && n->key != key) {
@@ -359,9 +359,7 @@ void datastructures::bst::walk(node* start, vector<int>& sorted) const {
 }
 
 
-// ****************************************************************************
-// *** LINKED LIST ***
-
+// Linked List.
 // Floyd Linked List Cycle Detection.
 void datastructures::ll_cycle(node* start, int* mu, int* lambda) {
   *lambda = 0;
@@ -396,8 +394,9 @@ void datastructures::ll_cycle(node* start, int* mu, int* lambda) {
 }
 
 
-// ****************************************************************************
-// *** NBRS ***
+// *****************************************************************************
+// ********************************* Numbers ***********************************
+// *****************************************************************************
 
 // GCD.
 int nbrs::gcd(int a, int b) {
@@ -523,30 +522,6 @@ set<string> nbrs::permutations(const string& letters) {
   return ans;
 }
 
-// Kadane.
-int nbrs::kadane(const vector<int>& a) {
-  int max_ever = 0;
-  int max_here = 0;
-  for (int i = 0; i < a.size(); ++i) {
-    max_here = max(max_here + a[i], 0);
-    max_ever = max(max_ever, max_here);
-  }
-  return max_ever;
-}
-
-// Binary Search.
-bool nbrs::binsearch(const vector<int>& a, int key) {
-  int b = 0;
-  int e = a.size() - 1;
-  while (b <= e) {
-    int mid = b + (e - b) / 2;
-    if (a[mid] == key) return true;
-    if (a[mid] < key) b = mid + 1;
-    else e = mid - 1;
-  }
-  return false;
-}
-
 // KMP substring matching.
 int nbrs::kmp(const string& pattern, const string& text) {
   // Generate the array of longest prefix that is also suffix.
@@ -657,7 +632,7 @@ double nbrs::closest_points(const vector<pair<double, double>>& points) {
     return min_d;
   };
 
-  // Sorts on x and y and calls recursive function
+  // Sorts on x and y and calls recursive function.
   auto p_y = points;
   auto p_x = points;
   sort(p_y.begin(), p_y.end(), [](const pair<double, double>& p1,
@@ -687,8 +662,38 @@ bool nbrs::is_prime(long long int nb) {
 }
 
 
-// ****************************************************************************
-// *** GRAPHS ***
+// *****************************************************************************
+// ******************************** Arrays *************************************
+// *****************************************************************************
+
+// Kadane.
+int nbrs::kadane(const vector<int>& a) {
+  int max_ever = 0;
+  int max_here = 0;
+  for (int i = 0; i < a.size(); ++i) {
+    max_here = max(max_here + a[i], 0);
+    max_ever = max(max_ever, max_here);
+  }
+  return max_ever;
+}
+
+// Binary Search.
+bool nbrs::binsearch(const vector<int>& a, int key) {
+  int b = 0;
+  int e = a.size() - 1;
+  while (b <= e) {
+    int mid = b + (e - b) / 2;
+    if (a[mid] == key) return true;
+    if (a[mid] < key) b = mid + 1;
+    else e = mid - 1;
+  }
+  return false;
+}
+
+
+// *****************************************************************************
+// ******************************** Graphs *************************************
+// *****************************************************************************
 
 // Topological Sort.
 vector<graphs::vertex*> graphs::graph::topo_sort(bool* has_cycle) {
@@ -720,9 +725,9 @@ vector<graphs::vertex*> graphs::graph::topo_sort(bool* has_cycle) {
   return vlist;
 }
 
-// 2-Coloring
+// 2-Coloring.
 bool graphs::graph::two_coloring() {
-  map<vertex*, int> color;           // All vertices start with color 0 (null)
+  map<vertex*, int> color;           // All vertices start with color 0 (null).
   for (auto* v0 : vertices) {
     if (color[v0] == 0) {
       color[v0] = 1;

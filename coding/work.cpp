@@ -14,53 +14,55 @@
 #include <stack>
 #include <vector>
 
-// ****************************************************************************
-// ** Sorting **
+// *****************************************************************************
+// ******************************** Sorting ************************************
+// *****************************************************************************
 
-// * Selection Sort *
+// Selection Sort.
 void sorts::selection_sort::sort(vector<int>& a, bool increasing) const {
   throw not_implemented_exc();
 }
 
-// * Insertion Sort *
+// Insertion Sort.
 void sorts::insertion_sort::sort(vector<int>& a, bool increasing) const {
   throw not_implemented_exc();
 }
 
-// * Quick Sort *
+// Quick Sort.
 void sorts::quick_sort::sort(vector<int>& a, bool increasing) const {
   throw not_implemented_exc();
 }
 
-// * Heap Sort *
+// Heap Sort.
 void sorts::heap_sort::sort(vector<int>& a, bool increasing) const {
   throw not_implemented_exc();
 }
 
-// * Counting Sort *
+// Counting Sort.
 vector<int> sorts::counting_sort::sort(
     const vector<int>& a, bool increasing) const {
   throw not_implemented_exc();
 }
 
-// * Radix Sort *
+// Radix Sort.
 vector<int> sorts::radix_sort::sort(
     const vector<int>& a, bool increasing) const {
   throw not_implemented_exc();
 }
 
-// * Merge Sort *
+// Merge Sort.
 vector<int> sorts::merge_sort::sort(
     const vector<int>& a, bool increasing) const {
   throw not_implemented_exc();
 }
 
 
-// ****************************************************************************
-// ** Data Structures **
+// *****************************************************************************
+// ***************************** Data Structures *******************************
+// *****************************************************************************
 
-// * Priority Queue *
-// Variables: a, maxqueue
+// Priority Queue.
+// Variables: a, maxqueue.
 int datastructures::pqueue::left(int node) const {
   throw not_implemented_exc();
 }
@@ -99,8 +101,8 @@ void datastructures::pqueue::decrease_key(int node, int new_key) {
 }
 
 
-// * Binary Search Tree *
-// Variables: root, key, left, right, parent
+// Binary Search Tree.
+// Variables: root, key, left, right, parent.
 datastructures::bst::node* datastructures::bst::search(int key) const {
   throw not_implemented_exc();
 }
@@ -139,8 +141,9 @@ void datastructures::ll_cycle(node* start, int* mu, int* lambda) {
   throw not_implemented_exc();
 }
 
-// ****************************************************************************
-// ** Numbers **
+// *****************************************************************************
+// ********************************* Numbers ***********************************
+// *****************************************************************************
 
 int nbrs::gcd(int a, int b) {
   throw not_implemented_exc();
@@ -158,19 +161,11 @@ set<string> nbrs::permutations(const string& letters) {
   throw not_implemented_exc();
 }
 
-int nbrs::kadane(const vector<int>& a) {
-  throw not_implemented_exc();
-}
-
-bool nbrs::binsearch(const vector<int>& a, int key) {
-  throw not_implemented_exc();
-}
-
 int nbrs::kmp(const string& pattern, const string& text) {
   throw not_implemented_exc();
 }
 
-// first: x, second: y
+// Variables: first: x, second: y.
 double nbrs::closest_points(const vector<pair<double, double>>& points) {
   throw not_implemented_exc();
 }
@@ -179,35 +174,51 @@ bool nbrs::is_prime(long long int nb) {
   throw not_implemented_exc();
 }
 
-// ****************************************************************************
-// ** Graphs **
-// Variables: vertices, edges, v1, v2, cost, value, neighs
+
+// *****************************************************************************
+// ******************************** Arrays *************************************
+// *****************************************************************************
+
+int nbrs::kadane(const vector<int>& a) {
+  throw not_implemented_exc();
+}
+
+bool nbrs::binsearch(const vector<int>& a, int key) {
+  throw not_implemented_exc();
+}
+
+
+// *****************************************************************************
+// ******************************** Graphs *************************************
+// *****************************************************************************
+
+// Variables: vertices, edges, v1, v2, cost, value, neighs.
 vector<graphs::vertex*> graphs::graph::topo_sort(bool* has_cycle) {
   throw not_implemented_exc();
 }
 
-// Variables: vertices, edges, v1, v2, cost, value, neighs
+// Variables: vertices, edges, v1, v2, cost, value, neighs.
 bool graphs::graph::two_coloring() {
   throw not_implemented_exc();
 }
 
 // Functions: edgebet(v1, v2) returns edge that links v1 and v2.
-// Variables: vertices, edges, v1, v2, cost, value, neighs
+// Variables: vertices, edges, v1, v2, cost, value, neighs.
 vector<graphs::edge*> graphs::graph::prim() {
   throw not_implemented_exc();
 }
 
-// Variables: vertices, edges, v1, v2, cost, value, neighs
+// Variables: vertices, edges, v1, v2, cost, value, neighs.
 vector<int> graphs::graph::dfs(vertex* start) {
   throw not_implemented_exc();
 }
 
-// Variables: vertices, edges, v1, v2, cost, value, neighs
+// Variables: vertices, edges, v1, v2, cost, value, neighs.
 vector<int> graphs::graph::bfs(vertex* start) {
   throw not_implemented_exc();
 }
 
-// Variables: edgeat[v1][v2] v1 --> v2
+// Variables: edgeat[v1][v2] v1 --> v2.
 vector<vector<int>> graphs::graph::floyd_warshall() {
   throw not_implemented_exc();
 }
