@@ -539,14 +539,10 @@ bool nbrs::binsearch(const vector<int>& a, int key) {
   int b = 0;
   int e = a.size() - 1;
   while (b <= e) {
-    int mid = (b + e) / 2;
-    if (a[mid] == key) {
-      return true;
-    } else if (a[mid] < key) {
-      b = mid + 1;
-    } else {
-      e = mid - 1;
-    }
+    int mid = b + (e - b) / 2;
+    if (a[mid] == key) return true;
+    if (a[mid] < key) b = mid + 1;
+    else e = mid - 1;
   }
   return false;
 }
