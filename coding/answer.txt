@@ -523,49 +523,70 @@ set<string> nbrs::permutations(const string& letters) {
 }
 
 // KMP substring matching.
+// The algorithm uses a table called a failure table. For each index i of the
+// pattern, entry i of the table contains the length of the longest proper
+// prefix of the substring [0; i] that:
+//   * is not [0; i] (what makes it 'proper')
+//   * is also a suffix of [0; i]
+// Using this table, when there is either a match or a detection of failure, the
+// algorithm can skip checking the beginning of the pattern for the next try:
+// say a substring S of the pattern matched so far, and the next character of
+// the text does not match. Using the table, we know that the last N characters
+// of S are identical to the first N characters of S (which are the first N
+// characters of the pattern, too). Since we know those N characters matched,
+// that means that for sure the first N characters of the pattern will match,
+// too. We can skip checking those.
 int nbrs::kmp(const string& pattern, const string& text) {
   // Generate the array of longest prefix that is also suffix.
   auto lps_gen = [&pattern]() {
-    int i = 1;                            // index in the pattern
-    int len = 0;                          // longest prefix
-    vector<int> lps(pattern.size(), 0);   // initialize to 0
+    // Index in the pattern: for i = 0, we have a substring of size 1, and there
+    // is no proper prefix, so we skip i = 0.
+    int i = 1;
+    int len = 0;                          // Longest prefix.
+    vector<int> lps(pattern.size(), 0);   // Initialize to 0.
     while (i < pattern.size()) {
       if (pattern[i] == pattern[len]) {
         len++;
-        lps[i] = len;
-        i++;
+        lps[i++] = len;
       } else {
-        if (len != 0) {
-          len = lps[len - 1];
-        } else {
-          lps[i] = 0;
-          i++;
-        }
+        if (len != 0) len = lps[len - 1];
+        // Consider the pattern: (AABAA)CDEF(AABAA)BGHIJK
+        //                                         ^ (current index i)
+        // We know that the current suffix S that we have (AABAA) is identical
+        // to the prefix of the pattern, but adding 'B' to that suffix doesn't
+        // make it a prefix of the pattern, unfortunately.
+        // We're still looking for the longest prefix that is also a suffix,
+        // and we know for sure if there is one, its length will be at best
+        // that of the current suffix S.
+        // If S also has a suffix S2 (AA) that is a prefix of S, that saves a
+        // few characters to start the search for a new suffix.
+
+        else lps[i++] = 0;
       }
     }
     return lps;
   };
 
-  int i = 0;                 // index in the text
-  int j = 0;                 // index in the pattern
-  int matches = 0;           // number of matches
+  int i = 0;                 // Index in the text.
+  int j = 0;                 // Index in the pattern.
+  int matches = 0;           // Number of matches.
   auto lps = lps_gen();
   while (i < text.size()) {
     if (pattern[j] == text[i]) {
-      j++; i++;
+      ++j; ++i;
     }
     if (j == pattern.size()) {
-      matches++;
-      j = lps[j-1];
-      // match is at index (i-j)
+      ++matches;
+      j = lps[j - 1];  // Match is at index (i - j).
     } else if (i < text.size() && pattern[j] != text[i]) {
       if (j != 0) {
-        j = lps[j-1];
+        j = lps[j - 1];
       } else {
-        i++;
+        ++i;
       }
     }
   }
+
   return matches;
 }
 
