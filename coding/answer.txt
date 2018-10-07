@@ -709,6 +709,12 @@ double arrays::closest_points(const vector<pair<double, double>>& points) {
 }
 
 void arrays::fisher_yates(vector<int>& a) {
+  std::default_random_engine generator;
+  for (int i = a.size() - 1; i > 0; --i) {
+    std::uniform_int_distribution<int> distribution(0, i);
+    int rand_index = distribution(generator);
+    swap(a[rand_index], a[i]);
+  }
 }
 
 

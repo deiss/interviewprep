@@ -188,6 +188,7 @@ double arrays::closest_points(const vector<pair<double, double>>& points) {
   throw not_implemented_exc();
 }
 
+// NOT TESTED.
 void arrays::fisher_yates(vector<int>& a) {
   throw not_implemented_exc();
 }
