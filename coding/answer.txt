@@ -81,15 +81,8 @@ vector<int> sorts::counting_sort::sort(
   for (int i = 0; i < a.size(); ++i) {
     ++c[a[i]];
   }
-  if (increasing) {
-    for (int i = 1; i < c.size(); ++i) {
-      c[i] += c[i - 1];
-    }
-  } else {
-    for (int i = c.size() - 1; i >= 1; --i) {
-      c[i - 1] += c[i];
-    }
-  }
+  if (increasing) for (int i = 1; i < c.size(); ++i) c[i] += c[i - 1];
+  else for (int i = c.size() - 1; i >= 1; --i) c[i - 1] += c[i];
   // Traverse in reverse order. Otherwise, sort will not be stable.
   for (int i = a.size() - 1; i >= 0; --i) {
     s[c[a[i]] - 1] = a[i];
