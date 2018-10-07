@@ -665,10 +665,10 @@ double arrays::closest_points(const vector<pair<double, double>>& points) {
       if (it->first < middle_x->first) sub_y_l[il++] = *it;
       else sub_y_r[ir++] = *it;
     }
-    double min_dist_l = local(beg_iter_x, middle_x,
-                              sub_y_l.begin(), sub_y_l.end());
-    double min_dist_r = local(middle_x, end_iter_x,
-                              sub_y_r.begin(), sub_y_r.end());
+    double min_dist_l =
+        local(beg_iter_x, middle_x, sub_y_l.begin(), sub_y_l.end());
+    double min_dist_r =
+        local(middle_x, end_iter_x, sub_y_r.begin(), sub_y_r.end());
     double min_dist = min_dist_l < 0 ? min_dist_r
                                      : min_dist_r < 0
                                            ? min_dist_l
