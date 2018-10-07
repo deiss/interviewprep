@@ -477,8 +477,8 @@ bool test_closest_points() {
     if (fabs(ans - local_ans) > 0.001) {
       cout << endl;
       cout << "  Error: Closest Pair()" << endl;
-      cout << "  Did not find the right closest pair ("
-          << ans << ", " << local_ans << ")" << endl;
+      cout << "  Did not find the right closest pair (returned: "
+           << ans << ", expected: " << local_ans << ")" << endl;
       cout << "  With (" << best.first.first << ", " << best.first.second <<
           ") and (" << best.second.first << ", " << best.second.second << ")." << endl;
       return false;

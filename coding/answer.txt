@@ -579,11 +579,8 @@ int nbrs::kmp(const string& pattern, const string& text) {
       ++matches;
       j = lps[j - 1];  // Match is at index (i - j).
     } else if (i < text.size() && pattern[j] != text[i]) {
-      if (j != 0) {
-        j = lps[j - 1];
-      } else {
-        ++i;
-      }
+      if (j != 0) j = lps[j - 1];
+      else ++i;
     }
   }
 
@@ -591,80 +588,94 @@ int nbrs::kmp(const string& pattern, const string& text) {
 }
 
 double nbrs::closest_points(const vector<pair<double, double>>& points) {
-  // Computes distance between two points
-  auto dist = [](const pair<double, double>& p1,
-                 const pair<double, double>& p2) {
-    return hypot(p1.first - p2.first, p1.second - p2.second);
+  // Computes distance between two points.
+  auto dist = [](vector<pair<double, double>>::const_iterator it1,
+                 vector<pair<double, double>>::const_iterator it2) {
+    return hypot(it1->first - it2->first, it1->second - it2->second);
   };
 
-  // Recursive util function
-  function<double(const vector<pair<double, double>>&,
-                  const vector<pair<double, double>>&,
-                  int)> closest_rec =
-      [&closest_rec, &dist](const vector<pair<double, double>>& p_x,
-         const vector<pair<double, double>>& p_y, int b) -> double {
-    if (p_y.size() == 3) {
-      return min(min(dist(p_y[0], p_y[1]), dist(p_y[0], p_y[2])),
-                 dist(p_y[1], p_y[2]));
-    } else if (p_y.size() == 2) {
-      return dist(p_y[0], p_y[1]);
-    } else if (p_y.size() <= 1) {
+  // Sort by x and y only once in the program.
+  auto sorted_x = points;
+  auto sorted_y = points;
+  sort(sorted_x.begin(), sorted_x.end(),
+       [](pair<double, double> p1, pair<double, double> p2) {
+         return p1.first < p2.first;
+       });
+  sort(sorted_y.begin(), sorted_y.end(),
+       [](pair<double, double> p1, pair<double, double> p2) {
+         return p1.second < p2.second;
+       });
+
+  function<double(vector<pair<double, double>>::const_iterator,
+                  vector<pair<double, double>>::const_iterator,
+                  vector<pair<double, double>>::const_iterator,
+                  vector<pair<double, double>>::const_iterator)> local =
+      [&local, &dist](vector<pair<double, double>>::const_iterator beg_iter_x,
+                      vector<pair<double, double>>::const_iterator end_iter_x,
+                      vector<pair<double, double>>::const_iterator beg_iter_y,
+                      vector<pair<double, double>>::const_iterator end_iter_y)
+          -> double {
+    // Base cases.
+    int nb_items = distance(beg_iter_x, end_iter_x);
+    if (nb_items == 3) {
+      return min(dist(beg_iter_x, beg_iter_x + 1),
+                 min(dist(beg_iter_x, beg_iter_x + 2),
+                     dist(beg_iter_x + 1, beg_iter_x + 2)));
+    } else if (nb_items == 2) {
+      return dist(beg_iter_x, beg_iter_x + 1);
+    } else if (nb_items <= 1) {
       return -1;
     }
 
-    // find middle point, split on mid.x using y-sorted array
-    int mid = p_y.size() / 2;
-    auto mid_point = p_x[b + mid];
-    vector<pair<double, double>> p_y_l(mid + 1);
-    vector<pair<double, double>> p_y_r(p_y.size() - mid - 1);
+    // Split the array.
+    int mid = nb_items / 2;
+    auto middle_x = beg_iter_x + mid;
+    auto middle_y = beg_iter_y + mid;
+
+    // Find closest in left and right. For this we need to create sub y-sorted
+    // arrays. We can do the following using the assumption that x values are
+    // unique.
+    vector<pair<double, double>> sub_y_l(mid);
+    vector<pair<double, double>> sub_y_r(distance(middle_x, end_iter_x));
     int il = 0, ir = 0;
-    for (int i = 0; i < p_y.size(); ++i) {
-      if (il == mid + 1 ||
-          (ir < p_y.size() - mid - 1 && p_y[i].first > mid_point.first)) {
-        p_y_r[ir++] = p_y[i];
-      } else {
-        p_y_l[il++] = p_y[i];
-      }
+    for (auto it = beg_iter_y; it != end_iter_y; ++it) {
+      if (it->first < middle_x->first) sub_y_l[il++] = *it;
+      else sub_y_r[ir++] = *it;
     }
+    double min_dist_l = local(beg_iter_x, middle_x,
+                              sub_y_l.begin(), sub_y_l.end());
+    double min_dist_r = local(middle_x, end_iter_x,
+                              sub_y_r.begin(), sub_y_r.end());
+    double min_dist = min_dist_l < 0 ? min_dist_r
+                                     : min_dist_r < 0
+                                           ? min_dist_l
+                                           : min(min_dist_l, min_dist_r);
 
-    // recursively find mins
-    double d_l = closest_rec(p_x, p_y_l, b);
-    double d_r = closest_rec(p_x, p_y_r, b + mid + 1);
-    double min_d = min(d_l, d_r);
-    if (d_l == -1) min_d = d_r;
-    else if (d_r == -1) min_d = d_l;
-
-    // merge case, using the strip
+    // Study points in the band of width 2 x min_dist around the middle point
+    // where the vector was split. Use the vector sorted by y so we don't have
+    // to sort the strip. Make sure to also add the middle point to this array.
     vector<pair<double, double>> strip;
-    for (int i = 0; i < p_y.size(); ++i) {
-      if (abs(p_y[i].first - mid_point.first) < min_d) {
-        strip.push_back(p_y[i]);
+    for (auto it = beg_iter_y; it != end_iter_y; ++it) {
+      if (fabs(it->first - middle_x->first) < min_dist) {
+        strip.push_back(*it);
       }
     }
-    for (int i = 0; i < strip.size(); ++i) {
-      for (int j = i + 1;
-           j < strip.size() && strip[j].second - strip[i].second < min_d; ++j) {
-        double d = dist(strip[j], strip[i]);
-        if (d < min_d) {
-          min_d = d;
+
+    // Check if there is a pair in the strip that is smaller.
+    if (strip.size() > 1) {
+      for (auto it1 = strip.begin(); it1 != strip.end(); ++it1) {
+        for (auto it = it1 + 1;
+             it != strip.end() && it->second - it1->second < min_dist; ++it) {
+          min_dist = min(min_dist, dist(it1, it));
         }
       }
     }
-    return min_d;
+
+    return min_dist;
   };
 
-  // Sorts on x and y and calls recursive function.
-  auto p_y = points;
-  auto p_x = points;
-  sort(p_y.begin(), p_y.end(), [](const pair<double, double>& p1,
-                                  const pair<double, double>& p2) {
-    return p1.second < p2.second;
-  });
-  sort(p_x.begin(), p_x.end(), [](const pair<double, double>& p1,
-                                  const pair<double, double>& p2) {
-    return p1.first < p2.first;
-  });
-  return closest_rec(p_x, p_y, 0);
+  return local(sorted_x.begin(), sorted_x.end(),
+               sorted_y.begin(), sorted_y.end());
 }
 
 bool nbrs::is_prime(long long int nb) {

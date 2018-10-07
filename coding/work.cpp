@@ -165,7 +165,7 @@ int nbrs::kmp(const string& pattern, const string& text) {
   throw not_implemented_exc();
 }
 
-// Variables: first: x, second: y.
+// Variables: first: x, second: y. You can assume each x value is unique.
 double nbrs::closest_points(const vector<pair<double, double>>& points) {
   throw not_implemented_exc();
 }
