@@ -2,7 +2,6 @@
 // ******************************** Sorting ************************************
 // *****************************************************************************
 
-// Selection Sort.
 void sorts::selection_sort::sort(vector<int>& a, bool increasing) const {
   // If a is empty, return. Otherwise, 0 - 1 is converted to an unsigned
   // value in the for loop condition, which leads to segfault.
@@ -18,7 +17,6 @@ void sorts::selection_sort::sort(vector<int>& a, bool increasing) const {
   }
 }
 
-// Insertion Sort.
 void sorts::insertion_sort::sort(vector<int>& a, bool increasing) const {
   for (int i = 1; i < a.size(); ++i) {
     int j = i;
@@ -31,7 +29,6 @@ void sorts::insertion_sort::sort(vector<int>& a, bool increasing) const {
   }
 }
 
-// Quick Sort.
 void sorts::quick_sort::sort(vector<int>& a, bool increasing) const {
   auto partition = [&a, increasing](int b, int e) {
     // Choose a random pivot in the array.
@@ -60,7 +57,6 @@ void sorts::quick_sort::sort(vector<int>& a, bool increasing) const {
   local(0, a.size() - 1);
 }
 
-// Heap Sort.
 void sorts::heap_sort::sort(vector<int>& a, bool increasing) const {
   // If a is empty, return. Otherwise, 0 - 1 is converted to an unsigned
   // value in the for loop condition, which leads to segfault.
@@ -76,7 +72,6 @@ void sorts::heap_sort::sort(vector<int>& a, bool increasing) const {
   }
 }
 
-// Counting Sort.
 vector<int> sorts::counting_sort::sort(
     const vector<int>& a, bool increasing) const {
   // If a is empty, return. Otherwise, there is no min/max element in the array.
@@ -103,7 +98,6 @@ vector<int> sorts::counting_sort::sort(
   return s;
 }
 
-// Radix Sort.
 vector<int> sorts::radix_sort::sort(
     const vector<int>& a, bool increasing) const {
   // If a is empty, return. Otherwise, there is no min/max element in the array.
@@ -142,7 +136,6 @@ vector<int> sorts::radix_sort::sort(
   return s;
 }
 
-// Merge Sort.
 vector<int> sorts::merge_sort::sort(
     const vector<int>& a, bool increasing) const {
   // If a is empty, return. Otherwise, the base case fails.
@@ -360,7 +353,6 @@ void datastructures::bst::walk(node* start, vector<int>& sorted) const {
 
 
 // Linked List.
-// Floyd Linked List Cycle Detection.
 void datastructures::ll_cycle(node* start, int* mu, int* lambda) {
   *lambda = 0;
   if (start == nullptr || start->next == nullptr ||
@@ -395,11 +387,10 @@ void datastructures::ll_cycle(node* start, int* mu, int* lambda) {
 
 
 // *****************************************************************************
-// ********************************* Numbers ***********************************
+// *********************************** Math ************************************
 // *****************************************************************************
 
-// GCD.
-int nbrs::gcd(int a, int b) {
+int math::gcd(int a, int b) {
   while (b != 0) {
     int c = a;
     a = b;
@@ -408,8 +399,7 @@ int nbrs::gcd(int a, int b) {
   return a;
 }
 
-// Selection.
-int nbrs::selection(vector<int>& a, int i) {
+int math::selection(vector<int>& a, int i) {
   auto partition = [&a](int b, int e) {
     int ip = b;
     int vp = a[e];
@@ -436,8 +426,7 @@ int nbrs::selection(vector<int>& a, int i) {
   return local(0, a.size() - 1, i);
 }
 
-// Subsets.
-set<string> nbrs::subsets(const string& letters) {
+set<string> math::subsets(const string& letters) {
   set<string> s;
   for (int i = 0; i < (1 << letters.size()); ++i) {
     int v = i;
@@ -454,7 +443,7 @@ set<string> nbrs::subsets(const string& letters) {
 }
 
 // Permutations - Iterative STL algorithm.
-set<string> nbrs::permutations(const string& letters) {
+set<string> math::permutations(const string& letters) {
   set<string> perms;
   if (letters.size() <= 1) {
     perms.insert(letters);
@@ -504,7 +493,7 @@ set<string> nbrs::permutations(const string& letters) {
 }
 
 // Permutations - Recursive.
-set<string> nbrs::permutations(const string& letters) {
+set<string> math::permutations(const string& letters) {
   set<string> ans;
   function<void(const string&, const string&)> local =
       [&local, &ans](const string& prefix, const string& rem) {
@@ -522,7 +511,21 @@ set<string> nbrs::permutations(const string& letters) {
   return ans;
 }
 
-// KMP substring matching.
+bool math::is_prime(long long int nb) {
+  auto modexp = [](long long int a, long long int b, long long int n) {
+    long long int d = 1;
+    int nb_dig = 1 + (int)log2(b);
+    for (int i = nb_dig; i >= 1; --i) {
+      d = (d*d) % n;
+      if (b & (1LL << (i-1))) {   // be sure to use a long long bitmask
+        d = (d*a) % n;
+      }
+    }
+    return d;
+  };
+  return modexp(2, nb - 1, nb) % nb == 1;
+}
+
 // The algorithm uses a table called a failure table. For each index i of the
 // pattern, entry i of the table contains the length of the longest proper
 // prefix of the substring [0; i] that:
@@ -536,7 +539,7 @@ set<string> nbrs::permutations(const string& letters) {
 // characters of the pattern, too). Since we know those N characters matched,
 // that means that for sure the first N characters of the pattern will match,
 // too. We can skip checking those.
-int nbrs::kmp(const string& pattern, const string& text) {
+int math::kmp(const string& pattern, const string& text) {
   // Generate the array of longest prefix that is also suffix.
   auto lps_gen = [&pattern]() {
     // Index in the pattern: for i = 0, we have a substring of size 1, and there
@@ -587,7 +590,34 @@ int nbrs::kmp(const string& pattern, const string& text) {
   return matches;
 }
 
-double nbrs::closest_points(const vector<pair<double, double>>& points) {
+
+// *****************************************************************************
+// ******************************** Arrays *************************************
+// *****************************************************************************
+
+int arrays::kadane(const vector<int>& a) {
+  int max_ever = 0;
+  int max_here = 0;
+  for (int i = 0; i < a.size(); ++i) {
+    max_here = max(max_here + a[i], 0);
+    max_ever = max(max_ever, max_here);
+  }
+  return max_ever;
+}
+
+bool arrays::binsearch(const vector<int>& a, int key) {
+  int b = 0;
+  int e = a.size() - 1;
+  while (b <= e) {
+    int mid = b + (e - b) / 2;
+    if (a[mid] == key) return true;
+    if (a[mid] < key) b = mid + 1;
+    else e = mid - 1;
+  }
+  return false;
+}
+
+double arrays::closest_points(const vector<pair<double, double>>& points) {
   // Computes distance between two points.
   auto dist = [](vector<pair<double, double>>::const_iterator it1,
                  vector<pair<double, double>>::const_iterator it2) {
@@ -678,48 +708,7 @@ double nbrs::closest_points(const vector<pair<double, double>>& points) {
                sorted_y.begin(), sorted_y.end());
 }
 
-bool nbrs::is_prime(long long int nb) {
-  auto modexp = [](long long int a, long long int b, long long int n) {
-    long long int d = 1;
-    int nb_dig = 1 + (int)log2(b);
-    for (int i = nb_dig; i >= 1; --i) {
-      d = (d*d) % n;
-      if (b & (1LL << (i-1))) {   // be sure to use a long long bitmask
-        d = (d*a) % n;
-      }
-    }
-    return d;
-  };
-  return modexp(2, nb - 1, nb) % nb == 1;
-}
-
-
-// *****************************************************************************
-// ******************************** Arrays *************************************
-// *****************************************************************************
-
-// Kadane.
-int nbrs::kadane(const vector<int>& a) {
-  int max_ever = 0;
-  int max_here = 0;
-  for (int i = 0; i < a.size(); ++i) {
-    max_here = max(max_here + a[i], 0);
-    max_ever = max(max_ever, max_here);
-  }
-  return max_ever;
-}
-
-// Binary Search.
-bool nbrs::binsearch(const vector<int>& a, int key) {
-  int b = 0;
-  int e = a.size() - 1;
-  while (b <= e) {
-    int mid = b + (e - b) / 2;
-    if (a[mid] == key) return true;
-    if (a[mid] < key) b = mid + 1;
-    else e = mid - 1;
-  }
-  return false;
+void arrays::fisher_yates(vector<int>& a) {
 }
 
 
@@ -727,7 +716,6 @@ bool nbrs::binsearch(const vector<int>& a, int key) {
 // ******************************** Graphs *************************************
 // *****************************************************************************
 
-// Topological Sort.
 vector<graphs::vertex*> graphs::graph::topo_sort(bool* has_cycle) {
   *has_cycle = false;
   set<vertex*> unmarked(vertices.begin(), vertices.end());
@@ -757,7 +745,6 @@ vector<graphs::vertex*> graphs::graph::topo_sort(bool* has_cycle) {
   return vlist;
 }
 
-// 2-Coloring.
 bool graphs::graph::two_coloring() {
   map<vertex*, int> color;           // All vertices start with color 0 (null).
   for (auto* v0 : vertices) {
@@ -782,7 +769,6 @@ bool graphs::graph::two_coloring() {
   return true;
 }
 
-// Prim.
 vector<graphs::edge*> graphs::graph::prim() {
   vector<edge*> elist;
   set<vertex*> visited;
@@ -815,7 +801,6 @@ vector<graphs::edge*> graphs::graph::prim() {
   return elist;
 }
 
-// DFS.
 vector<int> graphs::graph::dfs(vertex* start) {
   vector<int> vlist;
   stack<vertex*> vsearch;
@@ -836,7 +821,6 @@ vector<int> graphs::graph::dfs(vertex* start) {
   return vlist;
 }
 
-// BFS.
 vector<int> graphs::graph::bfs(vertex* start) {
   vector<int> vlist;
   queue<vertex*> vsearch;
@@ -856,7 +840,6 @@ vector<int> graphs::graph::bfs(vertex* start) {
   return vlist;
 }
 
-// Floyd Warshall.
 vector<vector<int>> graphs::graph::floyd_warshall() {
   vector<vector<int>> costs(
       vertices.size(),
@@ -879,7 +862,6 @@ vector<vector<int>> graphs::graph::floyd_warshall() {
   return costs;
 }
 
-// Biconnected Components.
 // Returns the components by value, the articulation points by reference.
 vector<vector<graphs::vertex*>>
 graphs::graph::biconnected_components(vertex* start, set<int>& apoints) const {

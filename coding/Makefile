@@ -1,6 +1,6 @@
 # project configuration
 CC       = g++
-LD_FLAGS = 
+LD_FLAGS =
 CC_FLAGS = -Wall -Wno-deprecated-declarations -std=c++14 -Ofast -funroll-loops
 EXEC     = main
 
@@ -25,6 +25,5 @@ main.o: main.cpp tests.o tests.hpp graphs.hpp
 tests.o: tests.cpp tests.hpp datastructures.hpp sorts.hpp graphs.hpp
 	$(CC) $(INCLUDE) $(CC_FLAGS) -o $@ -c $<
 
-work.o: work.cpp sorts.hpp nbrs.hpp datastructures.hpp graphs.hpp
+work.o: work.cpp sorts.hpp arrays.hpp math.hpp datastructures.hpp graphs.hpp
 	$(CC) $(INCLUDE) $(CC_FLAGS) -o $@ -c $<
-

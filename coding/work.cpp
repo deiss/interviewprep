@@ -1,6 +1,7 @@
 #include "datastructures.hpp"
 #include "graphs.hpp"
-#include "nbrs.hpp"
+#include "math.hpp"
+#include "arrays.hpp"
 #include "sorts.hpp"
 
 #include <algorithm>
@@ -142,35 +143,30 @@ void datastructures::ll_cycle(node* start, int* mu, int* lambda) {
 }
 
 // *****************************************************************************
-// ********************************* Numbers ***********************************
+// *********************************** Math ************************************
 // *****************************************************************************
 
-int nbrs::gcd(int a, int b) {
+int math::gcd(int a, int b) {
   throw not_implemented_exc();
 }
 
-int nbrs::selection(vector<int>& a, int i) {
+int math::selection(vector<int>& a, int i) {
   throw not_implemented_exc();
 }
 
-set<string> nbrs::subsets(const string& letters) {
+set<string> math::subsets(const string& letters) {
   throw not_implemented_exc();
 }
 
-set<string> nbrs::permutations(const string& letters) {
+set<string> math::permutations(const string& letters) {
   throw not_implemented_exc();
 }
 
-int nbrs::kmp(const string& pattern, const string& text) {
+bool math::is_prime(long long int nb) {
   throw not_implemented_exc();
 }
 
-// Variables: first: x, second: y. You can assume each x value is unique.
-double nbrs::closest_points(const vector<pair<double, double>>& points) {
-  throw not_implemented_exc();
-}
-
-bool nbrs::is_prime(long long int nb) {
+int math::kmp(const string& pattern, const string& text) {
   throw not_implemented_exc();
 }
 
@@ -179,11 +175,20 @@ bool nbrs::is_prime(long long int nb) {
 // ******************************** Arrays *************************************
 // *****************************************************************************
 
-int nbrs::kadane(const vector<int>& a) {
+int arrays::kadane(const vector<int>& a) {
   throw not_implemented_exc();
 }
 
-bool nbrs::binsearch(const vector<int>& a, int key) {
+bool arrays::binsearch(const vector<int>& a, int key) {
+  throw not_implemented_exc();
+}
+
+// Variables: first: x, second: y. You can assume each x value is unique.
+double arrays::closest_points(const vector<pair<double, double>>& points) {
+  throw not_implemented_exc();
+}
+
+void arrays::fisher_yates(vector<int>& a) {
   throw not_implemented_exc();
 }
 

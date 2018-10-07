@@ -13,7 +13,11 @@ namespace datastructures {
 void run_tests();
 }
 
-namespace nbrs {
+namespace math {
+void run_tests();
+}
+
+namespace arrays {
 void run_tests();
 }
 
@@ -23,4 +27,3 @@ void run_tests();
 
 
 #endif
-

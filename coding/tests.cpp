@@ -1,6 +1,7 @@
 #include "datastructures.hpp"
 #include "graphs.hpp"
-#include "nbrs.hpp"
+#include "math.hpp"
+#include "arrays.hpp"
 #include "sorts.hpp"
 #include "tests.hpp"
 
@@ -10,10 +11,10 @@
 namespace sorts {
 
 bool test_in_place_sort(const in_place_sort& s, bool increasing) {
-  vector<int> a1({1, 39, 39, 3, 20, 3, 3, 17, 9, 0, 0}); 
-  vector<int> a2({9, 540, 1, 29, 0, 28, 3, 57, 5, 5, 5, 5}); 
-  vector<int> a3({1}); 
-  vector<int> a4({}); 
+  vector<int> a1({1, 39, 39, 3, 20, 3, 3, 17, 9, 0, 0});
+  vector<int> a2({9, 540, 1, 29, 0, 28, 3, 57, 5, 5, 5, 5});
+  vector<int> a3({1});
+  vector<int> a4({});
 
   int wrong = 0;
   increasing ? cout << "(increasing) " : cout << "(decreasing) ";
@@ -28,10 +29,10 @@ bool test_in_place_sort(const in_place_sort& s, bool increasing) {
 }
 
 bool test_outta_place_sort(const outta_place_sort& s, bool increasing) {
-  vector<int> a1({1, 39, 39, 3, 20, 3, 3, 17, 9, 0, 0}); 
-  vector<int> a2({9, 540, 1, 29, 0, 28, 3, 57, 5, 5, 5, 5}); 
-  vector<int> a3({1}); 
-  vector<int> a4({}); 
+  vector<int> a1({1, 39, 39, 3, 20, 3, 3, 17, 9, 0, 0});
+  vector<int> a2({9, 540, 1, 29, 0, 28, 3, 57, 5, 5, 5, 5});
+  vector<int> a3({1});
+  vector<int> a4({});
 
   int wrong = 0;
   increasing ? cout << "(increasing) " : cout << "(decreasing) ";
@@ -57,7 +58,7 @@ void run_tests() {
     vector<int> test({});
     selection_sort().sort(test);
     cout << "[TEST: Selection sort]" << endl;
-    if (!test_in_place_sort(selection_sort(), true) || 
+    if (!test_in_place_sort(selection_sort(), true) ||
         !test_in_place_sort(selection_sort(), false)) wrong++;
     cout << endl;
   } catch(const not_implemented_exc& e) {
@@ -68,7 +69,7 @@ void run_tests() {
     vector<int> test({});
     insertion_sort().sort(test);
     cout << endl << "[TEST: Insertion sort]" << endl;
-    if (!test_in_place_sort(insertion_sort(), true) || 
+    if (!test_in_place_sort(insertion_sort(), true) ||
         !test_in_place_sort(insertion_sort(), false)) wrong++;
     cout << endl;
   } catch(const not_implemented_exc& e) {
@@ -79,7 +80,7 @@ void run_tests() {
     vector<int> test({});
     quick_sort().sort(test);
     cout << endl << "[TEST: Quick sort]" << endl;
-    if (!test_in_place_sort(quick_sort(), true) || 
+    if (!test_in_place_sort(quick_sort(), true) ||
         !test_in_place_sort(quick_sort(), false)) wrong++;
     cout << endl;
   } catch(const not_implemented_exc& e) {
@@ -90,7 +91,7 @@ void run_tests() {
     vector<int> test({});
     heap_sort().sort(test);
     cout << endl << "[TEST: Heap sort]" << endl;
-    if (!test_in_place_sort(heap_sort(), true) || 
+    if (!test_in_place_sort(heap_sort(), true) ||
         !test_in_place_sort(heap_sort(), false)) wrong++;
     cout << endl;
   } catch(const not_implemented_exc& e) {
@@ -102,7 +103,7 @@ void run_tests() {
     vector<int> test({});
     counting_sort().sort(test);
     cout << endl << "[TEST: Counting sort]" << endl;
-    if (!test_outta_place_sort(counting_sort(), true) || 
+    if (!test_outta_place_sort(counting_sort(), true) ||
         !test_outta_place_sort(counting_sort(), false)) wrong++;
     cout << endl;
   } catch(const not_implemented_exc& e) {
@@ -113,7 +114,7 @@ void run_tests() {
     vector<int> test({});
     radix_sort().sort(test);
     cout << endl << "[TEST: Radix sort]" << endl;
-    if (!test_outta_place_sort(radix_sort(), true) || 
+    if (!test_outta_place_sort(radix_sort(), true) ||
         !test_outta_place_sort(radix_sort(), false)) wrong++;
     cout << endl;
   } catch(const not_implemented_exc& e) {
@@ -124,7 +125,7 @@ void run_tests() {
     vector<int> test({});
     merge_sort().sort(test);
     cout << endl << "[TEST: Merge sort]" << endl;
-    if (!test_outta_place_sort(merge_sort(), true) || 
+    if (!test_outta_place_sort(merge_sort(), true) ||
         !test_outta_place_sort(merge_sort(), false)) wrong++;
     cout << endl;
   } catch(const not_implemented_exc& e) {
@@ -142,7 +143,7 @@ namespace datastructures {
 bool test_pqueue() {
   int wrong = 0;
   cout << "  (max)" << endl << "    1: ";
-  if (!pqueue::test({1, 39, 39, 3, 20, 3, 3, 17, 9, 0, 0}, true, 
+  if (!pqueue::test({1, 39, 39, 3, 20, 3, 3, 17, 9, 0, 0}, true,
                     {39, 20, 39, 17, 1, 3, 3, 3, 9, 0, 0},
                     {0, 0, 0, 40, 0, 0, 0, 100, 0, 200, 0},
                     {0, 0, 0, 40, 0, 0, 0, 100, 0, 200, 0})) {
@@ -169,7 +170,7 @@ bool test_pqueue() {
   } else cout << "OK" << endl;
 
   cout << "  (min)" << endl << "    1: ";
-  if (!pqueue::test({1, 39, 39, 3, 20, 3, 3, 17, 9, 0, 0}, false, 
+  if (!pqueue::test({1, 39, 39, 3, 20, 3, 3, 17, 9, 0, 0}, false,
                     {0, 0, 3, 3, 1, 39, 3, 17, 9, 20, 39},
                     {21, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0},
                     {21, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0})) {
@@ -281,7 +282,7 @@ void run_tests() {
 
 }
 
-namespace nbrs {
+namespace math {
 
 bool test_gcd() {
   auto display_error = [](int a, int b, int r) {
@@ -351,35 +352,6 @@ bool test_permutations() {
   return true;
 }
 
-bool test_kadane() {
-  auto ans = kadane({-2, -3, 4, -1, -2, 1, 5, -3});
-  if (ans != 7) {
-    cout << endl;
-    cout << "  Error: kadane()" << endl;
-    cout << "  Did not return the right answer (" << ans << ")" << endl;
-    return false;
-  }
-  return true;
-}
-
-bool test_binsearch() {
-  auto ans1 = binsearch({2, 5, 8, 12, 16, 23, 38, 56, 72, 91}, 15);
-  auto ans2 = binsearch({2, 5, 8, 12, 16, 23, 38, 56, 72, 91}, 38);
-  if (ans1) {
-    cout << endl;
-    cout << "  Error: binsearch()" << endl;
-    cout << "  Found a key that is not in the array" << endl;
-    return false;
-  }
-  if (!ans2) {
-    cout << endl;
-    cout << "  Error: binsearch()" << endl;
-    cout << "  Did not find a key that is in the array" << endl;
-    return false;
-  }
-  return true;
-}
-
 bool test_kmp() {
   if (kmp("ABCDABD", "ABC ABCDAB ABCDABCDABDE") != 1) {
     cout << endl;
@@ -443,6 +415,105 @@ bool test_is_prime() {
   return true;
 }
 
+void run_tests() {
+  int wrong = 0;
+  int nb = 6;
+  int total = nb;
+
+  cout << endl << "** NBRS **" << endl;
+
+  try {
+    gcd(1, 3);
+    cout << endl << "[TEST: GCD]" << endl;
+    if (!test_gcd()) wrong++;
+    cout << endl;
+  } catch(const not_implemented_exc& e) {
+    total--;
+  }
+
+  try {
+    vector<int> a({1});
+    selection(a, 1);
+    cout << endl << "[TEST: Selection]" << endl;
+    if (!test_selection()) wrong++;
+    cout << endl;
+  } catch(const not_implemented_exc& e) {
+    total--;
+  }
+
+  try {
+    subsets("123");
+    cout << endl << "[TEST: Subsets]" << endl;
+    if (!test_subsets()) wrong++;
+    cout << endl;
+  } catch(const not_implemented_exc& e) {
+    total--;
+  }
+
+  try {
+    permutations("123");
+    cout << endl << "[TEST: Permutations]" << endl;
+    if (!test_permutations()) wrong++;
+    cout << endl;
+  } catch(const not_implemented_exc& e) {
+    total--;
+  }
+
+  try {
+    is_prime(200);
+    cout << endl << "[TEST: Primality]" << endl;
+    if (!test_is_prime()) wrong++;
+    cout << endl;
+  } catch(const not_implemented_exc& e) {
+    total--;
+  }
+
+  try {
+    kmp("", "");
+    cout << endl << "[TEST: KMP]" << endl;
+    if (!test_kmp()) wrong++;
+    cout << endl;
+  } catch(const not_implemented_exc& e) {
+    total--;
+  }
+
+  cout << "Executed " << total << " out of " << nb << " tests. ";
+  cout << (total - wrong) << "/" << total << " tests pass." << endl;
+}
+
+}
+
+namespace arrays {
+
+bool test_kadane() {
+  auto ans = kadane({-2, -3, 4, -1, -2, 1, 5, -3});
+  if (ans != 7) {
+    cout << endl;
+    cout << "  Error: kadane()" << endl;
+    cout << "  Did not return the right answer (" << ans << ")" << endl;
+    return false;
+  }
+  return true;
+}
+
+bool test_binsearch() {
+  auto ans1 = binsearch({2, 5, 8, 12, 16, 23, 38, 56, 72, 91}, 15);
+  auto ans2 = binsearch({2, 5, 8, 12, 16, 23, 38, 56, 72, 91}, 38);
+  if (ans1) {
+    cout << endl;
+    cout << "  Error: binsearch()" << endl;
+    cout << "  Found a key that is not in the array" << endl;
+    return false;
+  }
+  if (!ans2) {
+    cout << endl;
+    cout << "  Error: binsearch()" << endl;
+    cout << "  Did not find a key that is in the array" << endl;
+    return false;
+  }
+  return true;
+}
+
 bool test_closest_points() {
   int nb_tests = 1000;
   int max_nb_points = 500;
@@ -489,47 +560,10 @@ bool test_closest_points() {
 
 void run_tests() {
   int wrong = 0;
-  int nb = 9;
+  int nb = 3;
   int total = nb;
 
-  cout << endl << "** NBRS **" << endl; 
-
-  try {
-    gcd(1, 3);
-    cout << endl << "[TEST: GCD]" << endl;
-    if (!test_gcd()) wrong++;
-    cout << endl;
-  } catch(const not_implemented_exc& e) {
-    total--;
-  }
-
-  try {
-    vector<int> a({1});
-    selection(a, 1);
-    cout << endl << "[TEST: Selection]" << endl;
-    if (!test_selection()) wrong++;
-    cout << endl;
-  } catch(const not_implemented_exc& e) {
-    total--;
-  }
-
-  try {
-    subsets("123");
-    cout << endl << "[TEST: Subsets]" << endl;
-    if (!test_subsets()) wrong++;
-    cout << endl;
-  } catch(const not_implemented_exc& e) {
-    total--;
-  }
-
-  try {
-    permutations("123");
-    cout << endl << "[TEST: Permutations]" << endl;
-    if (!test_permutations()) wrong++;
-    cout << endl;
-  } catch(const not_implemented_exc& e) {
-    total--;
-  }
+  cout << endl << "** ARRAYS **" << endl;
 
   try {
     kadane({});
@@ -550,28 +584,10 @@ void run_tests() {
   }
 
   try {
-    kmp("", "");
-    cout << endl << "[TEST: KMP]" << endl;
-    if (!test_kmp()) wrong++;
-    cout << endl;
-  } catch(const not_implemented_exc& e) {
-    total--;
-  }
-
-  try {
     vector<pair<double, double>> points({{1, 1}});
     closest_points(points);
     cout << endl << "[TEST: Closest Pair of Points]" << endl;
     if (!test_closest_points()) wrong++;
-    cout << endl;
-  } catch(const not_implemented_exc& e) {
-    total--;
-  }
-
-  try {
-    is_prime(200);
-    cout << endl << "[TEST: Primality]" << endl;
-    if (!test_is_prime()) wrong++;
     cout << endl;
   } catch(const not_implemented_exc& e) {
     total--;
