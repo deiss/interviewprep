@@ -738,7 +738,7 @@ vector<graphs::vertex*> graphs::graph::topo_sort(bool* has_cycle) {
     return true;
   };
   while (!unmarked.empty()) {
-    if (!visit(*unmarked.begin())) return vector<vertex*>();
+    if (!visit(*unmarked.begin())) return {};
   }
   reverse(vlist.begin(), vlist.end());
   return vlist;
