@@ -745,8 +745,8 @@ vector<graphs::vertex*> graphs::graph::topo_sort(bool* has_cycle) {
 }
 
 bool graphs::graph::two_coloring() {
-  map<vertex*, int> color;           // All vertices start with color 0 (null).
-  for (auto* v0 : vertices) {
+  map<vertex*, int> color;           // All vertices start with color 0.
+  for (vertex* v0 : vertices) {
     if (color[v0] == 0) {
       color[v0] = 1;
       queue<vertex*> vsearch;
@@ -756,7 +756,7 @@ bool graphs::graph::two_coloring() {
         vsearch.pop();
         for (vertex* n : v->neighs) {
           if (color[n] == 0) {
-            color[n] = color[v] == 1 ? 2 : 1;
+            color[n] = 3 - color[v];
             vsearch.push(n);
           } else if (color[n] == color[v]) {
             return false;
