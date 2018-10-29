@@ -722,7 +722,7 @@ bool test_floyd_warshall() {
     for (auto& v : ans1) {
       for (auto i : v) cout << i << " "; cout << endl;
     }
-    cout << endl;
+    return false;
   }
   graph fw2 = graph::build_graph(true);
   auto ans2 = fw2.floyd_warshall();
@@ -730,6 +730,7 @@ bool test_floyd_warshall() {
     cout << endl;
     cout << "  Error: floyd_warshall()" << endl;
     cout << "  Wrong weight matrix" << endl;
+    return false;
   }
   return true;
 }

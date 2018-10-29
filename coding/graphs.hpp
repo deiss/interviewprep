@@ -58,7 +58,6 @@ class graph {
     g.connect(v6, v8, 7, directed); g.connect(v8, v10, 2, directed);
     g.connect(v8, v7, 2, directed); g.connect(v9, v10, 2, directed);
     g.connect(v9, v7, 2, directed);
-    
 
     if (add_cycle) {
       g.connect(v10, v8, 7, directed);
@@ -126,4 +125,3 @@ class graph {
 }
 
 #endif
-
