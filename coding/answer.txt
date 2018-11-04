@@ -866,21 +866,28 @@ vector<vector<int>> graphs::graph::floyd_warshall() {
 vector<vector<graphs::vertex*>>
 graphs::graph::biconnected_components(vertex* start, set<int>& apoints) const {
   vector<vector<vertex*>> groups;
+  // Each vertex is given its order of discovery in num[v]. The earliest vertex
+  // reachable from a tree rooted at vertex v is stored in low[v].
   map<vertex*, int> num, low;
   map<vertex*, vertex*> parent;
-  stack<vertex*> s;                  // stack is used to build groups
-  int d = 1, children = 0;           // children is used to classify 'start'
+  stack<vertex*> s;  // Stack used to build groups.
+  int d = 1;
 
   function<void(vertex*)> dfs = [&](vertex* v) {
     low[v] = num[v] = d++;
     s.push(v);
+    int children = 0;  // Children is used to classify 'start'.
+    bool is_articulation = false;
     for (auto* n : v->neighs) {
       if (num[n] == 0) {
         parent[n] = v;
         dfs(n);
-        if (parent[v] == nullptr) children++;
+        ++children;
+        // If we cannot reach higher in the tree than the current node from any
+        // node under the current node, then the current node is an articulation
+        // point.
         if (low[n] >= num[v]) {
-          apoints.insert(v->value);
+          is_articulation = true;
           vector<vertex*> g({v});
           while (g.push_back(s.top()), s.pop(), g.back() != n);
           groups.push_back(move(g));
@@ -890,11 +897,14 @@ graphs::graph::biconnected_components(vertex* start, set<int>& apoints) const {
         low[v] = min(low[v], num[n]);
       }
     }
+    // Add v to the articulation points if it is one.
+    if ((is_articulation && parent[v] != nullptr) ||
+        (parent[v] == nullptr && children > 1)) {
+      apoints.insert(v->value);
+    }
   };
 
   parent[start] = nullptr;
   dfs(start);
-  if (children > 1) apoints.insert(start->value);
-  else apoints.erase(start->value);
   return groups;
 }

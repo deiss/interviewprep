@@ -744,14 +744,11 @@ bool test_biconnected_components() {
     auto answer1 = g1.biconnected_components(start, apoints);
     set<set<int>> ans1_to_set;
     for (auto& c : answer1) {
-      //cout << "group: ";
       set<int> s;
       for (auto* v : c) {
-        //cout << v->value << " ";
         s.insert(v->value);
       }
       ans1_to_set.insert(s);
-      //cout << endl;
     }
     if (ans1_to_set != check1) {
       cout << endl;
@@ -759,7 +756,6 @@ bool test_biconnected_components() {
       cout << "  Wrong set of components" << endl;
       return false;
     }
-    //for (auto i : apoints) cout << i << " ";
     if (apoints != apoints1) {
       cout << endl;
       cout << "  Error: biconnected_components()" << endl;
@@ -776,14 +772,11 @@ bool test_biconnected_components() {
     auto answer2 = g2.biconnected_components(start, apoints);
     set<set<int>> ans2_to_set;
     for (auto& c : answer2) {
-      //cout << "group: ";
       set<int> s;
       for (auto* v : c) {
-        //cout << v->value << " ";
         s.insert(v->value);
       }
       ans2_to_set.insert(s);
-      //cout << endl;
     }
     if (ans2_to_set != check2) {
       cout << endl;
@@ -791,7 +784,6 @@ bool test_biconnected_components() {
       cout << "  Wrong set of components" << endl;
       return false;
     }
-    //for (auto i : apoints) cout << i << " ";
     if (apoints != apoints2) {
       cout << endl;
       cout << "  Error: biconnected_components()" << endl;
@@ -808,7 +800,7 @@ void run_tests() {
   int nb = 7;
   int total = nb;
 
-  cout << endl << "** GRAPHS **" << endl; 
+  cout << endl << "** GRAPHS **" << endl;
 
   try {
     graph g; bool res; g.topo_sort(&res);
@@ -878,4 +870,3 @@ void run_tests() {
 }
 
 }
-
