@@ -234,3 +234,9 @@ vector<vector<graphs::vertex*>>
 graphs::graph::biconnected_components(vertex* start, set<int>& apoints) const {
   throw not_implemented_exc();
 }
+
+// Finds strongly connected components in a directed graph.
+vector<vector<graphs::vertex*>>
+graphs::graph::scc() const {
+  throw not_implemented_exc();
+}

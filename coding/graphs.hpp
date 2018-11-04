@@ -39,9 +39,10 @@ class graph {
   vector<vector<int>> floyd_warshall();
   vector<vector<graphs::vertex*>> biconnected_components(
       vertex*, set<int>&) const;
+  vector<vector<graphs::vertex*>> scc() const;
 
   static graph build_graph(bool directed, bool add_cycle = false,
-                           bool remove_2_6 = false) {
+                           bool remove_2_6 = false, bool make_scc = false) {
     graph g;
 
     vertex* v1 = g.add_vertex(1); vertex* v2 = g.add_vertex(2);
@@ -52,6 +53,8 @@ class graph {
 
     g.connect(v1, v2, 4, directed);
     if (!remove_2_6) g.connect(v2, v6, 2, directed);
+    if (make_scc) g.connect(v3, v1, 5, directed);
+    if (make_scc) g.connect(v10, v6, 6, directed);
     g.connect(v2, v5, 2, directed); g.connect(v2, v4, 1, directed);
     g.connect(v2, v3, 9, directed); g.connect(v3, v7, 2, directed);
     g.connect(v5, v7, 2, directed); g.connect(v6, v9, 3, directed);

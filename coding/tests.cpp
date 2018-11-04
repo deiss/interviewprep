@@ -795,9 +795,31 @@ bool test_biconnected_components() {
   return true;
 }
 
+bool test_scc() {
+  graph g1 = graph::build_graph(true, false, false, true);
+  set<set<int>> check1({ {7}, {8, 10, 9, 6}, {5}, {4}, {3, 2, 1} });
+  auto answer1 = g1.scc();
+  set<set<int>> ans1_to_set;
+  for (auto& c : answer1) {
+    set<int> s;
+    for (auto* v : c) {
+      s.insert(v->value);
+    }
+    ans1_to_set.insert(s);
+  }
+  if (ans1_to_set != check1) {
+    cout << endl;
+    cout << "  Error: scc()" << endl;
+    cout << "  Wrong set of components" << endl;
+    return false;
+  }
+
+  return true;
+}
+
 void run_tests() {
   int wrong = 0;
-  int nb = 7;
+  int nb = 8;
   int total = nb;
 
   cout << endl << "** GRAPHS **" << endl;
@@ -860,6 +882,15 @@ void run_tests() {
     graph g; set<int> s; g.biconnected_components(g.add_vertex(1), s);
     cout << endl << "[TEST: Biconnected Components]" << endl;
     if (!test_biconnected_components()) wrong++;
+    cout << endl;
+  } catch(const not_implemented_exc& e) {
+    total--;
+  }
+
+  try {
+    graph g; set<int> s; g.scc();
+    cout << endl << "[TEST: Strongly Connected Components]" << endl;
+    if (!test_scc()) wrong++;
     cout << endl;
   } catch(const not_implemented_exc& e) {
     total--;

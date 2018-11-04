@@ -862,7 +862,6 @@ vector<vector<int>> graphs::graph::floyd_warshall() {
   return costs;
 }
 
-// Returns the components by value, the articulation points by reference.
 vector<vector<graphs::vertex*>>
 graphs::graph::biconnected_components(vertex* start, set<int>& apoints) const {
   vector<vector<vertex*>> groups;
@@ -906,5 +905,41 @@ graphs::graph::biconnected_components(vertex* start, set<int>& apoints) const {
 
   parent[start] = nullptr;
   dfs(start);
+  return groups;
+}
+
+vector<vector<graphs::vertex*>>
+graphs::graph::scc() const {
+  vector<vector<vertex*>> groups;
+  // Each vertex is given its order of discovery in num[v]. The earliest vertex
+  // reachable from a tree rooted at vertex v is stored in low[v].
+  map<vertex*, int> num, low;
+  map<vertex*, bool> onstack;
+  stack<vertex*> s;  // Stack used to build groups.
+  int d = 1;
+
+  function<void(vertex*)> dfs = [&](vertex* v) {
+    low[v] = num[v] = d++;
+    s.push(v);
+    onstack[v] = true;
+    for (auto* n : v->neighs) {
+      if (num[n] == 0) {
+        dfs(n);
+        low[v] = min(low[v], low[n]);
+      } else if (onstack[n]) {
+        low[v] = min(low[v], num[n]);
+      }
+    }
+    if (low[v] == num[v]) {
+      vector<vertex*> g;
+      while (onstack[s.top()] = false, g.push_back(s.top()), s.pop(),
+             g.back() != v);
+      groups.push_back(move(g));
+    }
+  };
+
+  for (vertex* v : vertices) {
+    if (num[v] == 0) dfs(v);
+  }
   return groups;
 }
