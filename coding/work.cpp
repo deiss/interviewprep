@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <complex>
 #include <functional>
 #include <iostream>
 #include <limits>
@@ -185,6 +186,10 @@ bool arrays::binsearch(const vector<int>& a, int key) {
 
 // Variables: first: x, second: y. You can assume each x value is unique.
 double arrays::closest_points(const vector<pair<double, double>>& points) {
+  throw not_implemented_exc();
+}
+
+void arrays::fft(vector<complex<double>>& x) {
   throw not_implemented_exc();
 }
 

@@ -701,6 +701,37 @@ double arrays::closest_points(const vector<pair<double, double>>& points) {
                sorted_y.begin(), sorted_y.end());
 }
 
+void arrays::fft(vector<complex<double>>& x) {
+  if (x.size() == 0) return;
+  auto bit_reverse = [&x](int v) {
+    int reverse = 0;
+    int nb_bits = log2(x.size());
+    for (int i = 0; i < nb_bits; ++i) {
+      reverse |= ((v >> i) & 1) << (nb_bits - i - 1);
+    }
+    return reverse;
+  };
+  for (int s = 1; s <= log2(x.size()); ++s) {
+    int m = pow(2, s);
+    complex<double> wm = exp(complex<double>(0, -2 * M_PI / m));
+    for (int k = 0; k < x.size(); k += m) {
+      complex<double> w = 1;
+      for (int j = 0; j < m/2; ++j) {
+        complex<double> t = w * x[bit_reverse(k + j + m/2)];
+        complex<double> u = x[bit_reverse(k + j)];
+        x[bit_reverse(k + j)] = u + t;
+        x[bit_reverse(k + j + m/2)] = u - t;
+        w *= wm;
+      }
+    }
+  }
+  for (int i = 0; i < x.size(); ++i) {
+    if (i < bit_reverse(i)) {
+      swap(x[i], x[bit_reverse(i)]);
+    }
+  }
+}
+
 void arrays::fisher_yates(vector<int>& a) {
   std::default_random_engine generator;
   for (int i = a.size() - 1; i > 0; --i) {

@@ -558,9 +558,25 @@ bool test_closest_points() {
   return true;
 }
 
+bool test_fft() {
+  vector<complex<double>> a = {1, 2, 1, 0, -1, -2, -1, 0};
+  vector<complex<double>> ans = {0, {4.83, -4.83}, 0, {-0.83, -0.83},
+                                 0, {-0.83, 0.83}, 0, {4.83, 4.83}};
+  fft(a);
+  for (int i = 0; i < a.size(); ++i) {
+    if (abs(a[i] - ans[i]) > 0.1) {
+      cout << endl;
+      cout << "  Error: fft()" << endl;
+      cout << "  Did not compute the correct fft" << endl;
+      return false;
+    }
+  }
+  return true;
+}
+
 void run_tests() {
   int wrong = 0;
-  int nb = 3;
+  int nb = 4;
   int total = nb;
 
   cout << endl << "** ARRAYS **" << endl;
@@ -578,6 +594,16 @@ void run_tests() {
     binsearch({}, 0);
     cout << endl << "[TEST: Binary Search]" << endl;
     if (!test_binsearch()) wrong++;
+    cout << endl;
+  } catch(const not_implemented_exc& e) {
+    total--;
+  }
+
+  try {
+    vector<complex<double>> a = {};
+    fft(a);
+    cout << endl << "[TEST: FFT]" << endl;
+    if (!test_fft()) wrong++;
     cout << endl;
   } catch(const not_implemented_exc& e) {
     total--;
